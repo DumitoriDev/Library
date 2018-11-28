@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.SqlClient;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -23,6 +24,13 @@ namespace Library
     {
         public MainWindow()
         {
+            DataBaseContext context = new DataBaseContext();
+
+            var tmp = context.Books.First();
+            var tmpres = tmp.AuthorId.ToList();
+                
+            
+
             InitializeComponent();
         }
     }

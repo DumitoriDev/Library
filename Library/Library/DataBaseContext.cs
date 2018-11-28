@@ -7,8 +7,12 @@ using System.Data.Entity;
 
 namespace Library
 {
-    public class DataBaseContext:DbContext
+    public class DataBaseContext : DbContext
     {
+        static DataBaseContext()
+        {
+            System.Data.Entity.Database.SetInitializer(new DatabaseInitializer());
+        }
         public DataBaseContext() : base("connStr") { }
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }

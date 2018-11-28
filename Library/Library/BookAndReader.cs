@@ -8,8 +8,9 @@ namespace Library
 {
     public class BookAndReader
     {
-        public int Book_id { get; set; }
-        public int Reader_id { get; set; }
-        public DateTime Date_end { get; set; }
+        public int Id { get; set; }
+        public ICollection<Book> Books { get; set; }
+        public Reader ReaderId{ get; set; }
+        public ICollection<DateTime > DateEnd { get; set; }
     }
 }
