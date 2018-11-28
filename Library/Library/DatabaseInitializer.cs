@@ -7,9 +7,9 @@ using System.Threading.Tasks;
 
 namespace Library
 {
-    class DatabaseInitializer: DropCreateDatabaseIfModelChanges<DatabaseContext>
+    class DatabaseInitializer: DropCreateDatabaseIfModelChanges<DataBaseContext>
     {
-        protected override void Seed(DatabaseContext ctx)
+        protected override void Seed(DataBaseContext ctx)
         {
             //var tmpCategory = new Category
             //{

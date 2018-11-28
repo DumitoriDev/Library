@@ -3,10 +3,11 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Windows.Controls;
 
-namespace Lib
+namespace Library
 {
-    class Book
+    public class Book
     {
         public int Id { get; set; }
         public string Name { get; set; }

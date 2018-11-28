@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Lib
+namespace Library
 {
-    class BookAndReader
+    public class BookAndReader
     {
         public int Book_id { get; set; }
         public int Reader_id { get; set; }

@@ -5,9 +5,9 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Data.Entity;
 
-namespace Lib
+namespace Library
 {
-    class DataBaseContext:DbContext
+    public class DataBaseContext:DbContext
     {
         public DataBaseContext() : base("connStr") { }
         public DbSet<Book> Books { get; set; }
