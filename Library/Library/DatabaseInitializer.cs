@@ -4,13 +4,10 @@ using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Windows.Controls;
-
-//DropCreateDatabaseIfModelChanges<DataBaseContext>
 
 namespace Library
 {
-    class DatabaseInitializer: DropCreateDatabaseAlways<DataBaseContext>
+    class DatabaseInitializer: DropCreateDatabaseIfModelChanges<DataBaseContext>
     {
         protected override void Seed(DataBaseContext ctx)
         {
@@ -29,7 +26,7 @@ namespace Library
 
                 },
                 Cover = new byte[10],
-                Date = new DateTime(2018,12,12),
+                Date = new DateTime(2018, 12, 12),
                 Desc = "prosto Book",
                 EditionId = new Edition
                 {
@@ -67,8 +64,8 @@ namespace Library
             };
             var tmpBookAndReader = new BookAndReader
             {
-                Books = new List<Book> {tmpBook},
-                DateEnd = new List<DateTime> {new DateTime(2018, 12, 12) },
+                Books = new List<Book> { tmpBook },
+                DateEnd = new List<DateTime> { new DateTime(2018, 12, 12) },
                 ReaderId = tmpReader
 
             };
@@ -92,11 +89,12 @@ namespace Library
 
             //};
 
-           
+
             ctx.Entry(tmpBook).State = EntityState.Added;
             ctx.Entry(tmpReader).State = EntityState.Added;
             ctx.Entry(tmpBookAndReader).State = EntityState.Added;
             ctx.SaveChanges();
         }
+
     }
 }

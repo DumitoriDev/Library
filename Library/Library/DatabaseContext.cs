@@ -7,19 +7,25 @@ using System.Data.Entity;
 
 namespace Library
 {
-    public class DataBaseContext : DbContext
+    public class DataBaseContext:DbContext
     {
-        static DataBaseContext()
+        private DataBaseContext() : base("connStr") { }
+        private static DataBaseContext instance;
+        public static DataBaseContext GetInstance()
         {
-            System.Data.Entity.Database.SetInitializer(new DatabaseInitializer());
+            if(instance==null)
+            {
+                instance = new DataBaseContext();
+            }
+            return instance;
         }
-        public DataBaseContext() : base("connStr") { }
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Genre> Genres { get; set; }
         public DbSet<Edition> Editions { get; set; }
         public DbSet<Language> Languages { get; set; }
         public DbSet<Type> Types { get; set; }
+        public DbSet<Reader> Readers { get; set; }
         public DbSet<BookAndReader> BookAndReaders { get; set; }
     }
 }

@@ -74,6 +74,10 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+<<<<<<< HEAD
+    <Compile Include="IRepository.cs" />
+=======
+>>>>>>> 7339186ab9e870f6e2fdf44d6d313d62c9a3e054
     <Compile Include="Reader.cs" />
     <Compile Include="Type.cs" />
     <Page Include="MainWindow.xaml">
