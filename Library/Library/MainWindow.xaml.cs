@@ -22,6 +22,11 @@ namespace Library
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+
+        private void ToggleFlyoutSetting(object sender, RoutedEventArgs e)
+        {
+            yourMahAppFlyout.IsOpen = !yourMahAppFlyout.IsOpen;
+        }
         public MainWindow()
         {
             DataBaseContext context = new DataBaseContext();
@@ -32,6 +37,11 @@ namespace Library
             
 
             InitializeComponent();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            yourMahAppFlyout.IsOpen = !yourMahAppFlyout.IsOpen;
         }
     }
 }
