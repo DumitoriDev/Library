@@ -1,0 +1,7 @@
+.vs/
+*.exe
+*.sln
+.bin/
+.obj/
+.Properties/
+*.config
