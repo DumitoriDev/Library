@@ -8,7 +8,7 @@
 *.iref
 *.txt
 .Debug/
-Library\Library\App.config
+App.config
 Library\LibraryClass\bin
 Library\LibraryClass\obj
 Library\LibraryClass\Properties
