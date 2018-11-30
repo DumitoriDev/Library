@@ -14,7 +14,6 @@ C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\Entit
 C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.SqlServer.dll
 C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.xml
 C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.SqlServer.xml
-C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csprojAssemblyReference.cache
 C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csproj.CoreCompileInputs.cache
 C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csproj.CopyComplete
 C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.dll

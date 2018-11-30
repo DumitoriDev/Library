@@ -1,8 +1,8 @@
 .vs/
 *.exe
 Debug/
-*.bin/
-*.obj/
+.bin/
+.obj/
 .Properties/
 *.cache
 *.iref
