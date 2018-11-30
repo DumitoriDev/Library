@@ -1,14 +1,14 @@
 *.vs/
 *.exe
-.Debug/
+Debug/
 *.bin/
 *.obj/
 .Properties/
 *.cache
 *.iref
 *.txt
-.Debug/
-App.config
+Library\Library\bin
+Library\Library\App.config
 Library\LibraryClass\bin
 Library\LibraryClass\obj
 Library\LibraryClass\Properties
