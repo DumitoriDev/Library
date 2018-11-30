@@ -1,4 +1,4 @@
-*.vs/
+.vs/
 *.exe
 Debug/
 *.bin/
@@ -7,8 +7,4 @@ Debug/
 *.cache
 *.iref
 *.txt
-Library\Library\bin
 *.config
-Library\LibraryClass\bin
-Library\LibraryClass\obj
-Library\LibraryClass\Properties
