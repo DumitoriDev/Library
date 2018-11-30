@@ -9,3 +9,13 @@ C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFr
 C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csproj.CopyComplete
 C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.dll
 C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.pdb
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\LibraryClass.dll.config
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.dll
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.xml
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csprojAssemblyReference.cache
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csproj.CoreCompileInputs.cache
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csproj.CopyComplete
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.dll
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.pdb
