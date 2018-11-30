@@ -4,5 +4,6 @@
 .bin/
 .obj/
 .Properties/
-*.config
+
 .Debug/
+Library\Library\Library\App.xaml
