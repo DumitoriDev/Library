@@ -5,46 +5,77 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Library"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        xmlns:libraryClass="clr-namespace:LibraryClass;assembly=LibraryClass"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition></RowDefinition>
+            <RowDefinition>
 
-
+            </RowDefinition>
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
-            <ColumnDefinition Width="51*">
+            <ColumnDefinition>
 
             </ColumnDefinition>
-            <ColumnDefinition Width="742*"></ColumnDefinition>
-
         </Grid.ColumnDefinitions>
 
         <mah:MetroAnimatedTabControl x:Name="tabControl"  Margin="20.8,0,23.6,0" Grid.Column="1">
-            <TabItem x:Name="tab1" Header="Tab 1">
-                <StackPanel Margin="10">
-                    <TextBlock Text="hello"></TextBlock>
-                    <TextBlock Text="hello"></TextBlock>
-                    <TextBlock Text="hello"></TextBlock>
-                    <TextBlock Text="hello"></TextBlock>
-                </StackPanel>
+            <TabItem x:Name="tabBooks" Header="Книги">
+                <Grid>
+                    <DataGrid Name="GridBooks"  ItemsSource="{Binding Path=Books}" Margin="10,20,10,0"
+                              AutoGenerateColumns="False"
+                              Style="{StaticResource AzureDataGrid}" SelectionChanged="GridBooks_OnSelectionChanged">
+                        <DataGrid.Columns>
+
+
+
+
+
+                            <DataGridTemplateColumn Header="Image">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <Image Height="25" Width="50" Source="{Binding Img.Source}" />
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+                    
+
+
+
+
+                        <!--<DataGridTextColumn Header="Имя книги"
+                                                Binding="{Binding Name}">
+                               
+                            </DataGridTextColumn>
+                            <DataGridTextColumn Header="Количество страниц"
+                                                Binding="{Binding Count}" />
+
+                            <DataGridTextColumn Header="Цена"
+                                                Binding="{Binding Price}" />
+
+                            <DataGridTextColumn Header="Картинка"
+                            Binding="{Binding Img.Source}" />-->
+
+                          
+                        </DataGrid.Columns>
+                       
+                    </DataGrid>
+                </Grid>
             </TabItem>
-            <TabItem x:Name="tab2" Header="Tab 2">
+            <TabItem x:Name="tab2" Header="Читатели">
                 <TextBlock Text="hello1"></TextBlock>
             </TabItem>
-            <TabItem x:Name="tab3" Header="Tab 3">
+            <TabItem x:Name="tab3" Header="Должники">
                 <CheckBox x:Name="check3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            </TabItem>
+            <TabItem Header="image">
+                
             </TabItem>
         </mah:MetroAnimatedTabControl>
 
        
-        <mah:FlyoutsControl Name="FlyoutControlSettings" Background="Beige" Grid.ColumnSpan="2" Margin="0,0,23.6,0">
-            <mah:Flyout x:Name="yourMahAppFlyout"  Header="Flyout" Theme="Accent" Position="Left" Width="600" IsOpen="False" BorderBrush="Black" BorderThickness="3,0,3,3">
-                <TextBlock FontSize="24">Hello World</TextBlock>
-
-            </mah:Flyout>
-        </mah:FlyoutsControl>
+       
 
 </Grid>
 </mah:MetroWindow>

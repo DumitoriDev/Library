@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace LibraryClass
 {
+    /// <summary>
+    /// 
+    /// </summary>
     public class EditionRepository : IRepository<Edition>
     {
         private static EditionRepository _instance;

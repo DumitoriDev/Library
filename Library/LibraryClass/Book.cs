@@ -1,11 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 using System.Linq;
+using System.Net.Mime;
+
+using System.Drawing;
+using System.Windows.Controls;
 
 namespace LibraryClass
 {
     public class Book
     {
+        
         public int Id { get; set; }
         public string Name { get; set; }
         public virtual ICollection<Author> AuthorId { get; set; }
@@ -20,7 +26,10 @@ namespace LibraryClass
         public byte[] Cover { get; set; }
         public string Desc { get; set; }
         public int Rate { get; set; }
+
+        [NotMapped] public System.Windows.Controls.Image Img { get; set; } = new System.Windows.Controls.Image();
+
     }
 
-   
+
 }

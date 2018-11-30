@@ -28,7 +28,7 @@ namespace LibraryClass
             _baseContext.SaveChanges();
         }
 
-        public void Delete(int id)
+        public  void Delete(int id)
         {
             _baseContext.Authors.Remove(Get(id));
             _baseContext.SaveChanges();

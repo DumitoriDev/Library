@@ -13,9 +13,7 @@ namespace LibraryClass
         private BookAndReaderRepository() { }
         public static BookAndReaderRepository GetInstance()
         {
-            if (_instance == null)
-                _instance = new BookAndReaderRepository();
-            return _instance;
+            return _instance ?? (_instance = new BookAndReaderRepository());
         }
         public void Add(BookAndReader bookAndReader)
         {
@@ -42,15 +40,13 @@ namespace LibraryClass
         public void Update(BookAndReader newBookAndReader)
         {
             var changeable = Get(newBookAndReader.Id);
-            if (changeable != null)
-            {
-                changeable.ReaderId = newBookAndReader.ReaderId;
-                changeable.Books = newBookAndReader.Books;
-                changeable.DateEnd = newBookAndReader.DateEnd;
+            if (changeable == null) return;
+            changeable.ReaderId = newBookAndReader.ReaderId;
+            changeable.Books = newBookAndReader.Books;
+            changeable.DateEnd = newBookAndReader.DateEnd;
 
-                _baseContext.Entry(changeable).State = System.Data.Entity.EntityState.Modified;
-                _baseContext.SaveChanges();
-            }
+            _baseContext.Entry(changeable).State = System.Data.Entity.EntityState.Modified;
+            _baseContext.SaveChanges();
         }
     }
 }
