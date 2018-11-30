@@ -4,6 +4,7 @@
 .bin/
 .obj/
 .Properties/
-
+*.cheche
+*.iref
 .Debug/
 Library\Library\Library\App.xaml
