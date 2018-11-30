@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -22,9 +22,11 @@ namespace Library
     /// </summary>
     public partial class MainWindow : MetroWindow
     {
+       
         public MainWindow()
         {
-            
+            BookRepository book = BookRepository.GetInstance();
+            var tmp = book.GetAll();
             InitializeComponent();
         }
     }

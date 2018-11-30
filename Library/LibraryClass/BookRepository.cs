@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LibraryClass
 {
-    internal class BookRepository : IRepository<Book>
+   public class BookRepository : IRepository<Book>
     {
         private static BookRepository _instance;
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();

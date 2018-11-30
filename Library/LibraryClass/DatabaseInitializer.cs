@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
-
+//DropCreateDatabaseIfModelChanges<DataBaseContext>
 namespace LibraryClass
 {
     internal class DatabaseInitializer: DropCreateDatabaseIfModelChanges<DataBaseContext>

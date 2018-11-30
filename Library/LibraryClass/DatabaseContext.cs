@@ -10,6 +10,13 @@ namespace LibraryClass
         {
             return _instance ?? (_instance = new DataBaseContext());
         }
+
+        static DataBaseContext()
+        {
+            System.Data.Entity.Database.SetInitializer(new DatabaseInitializer());
+
+        }
+        
         public DbSet<Book> Books { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Genre> Genres { get; set; }
