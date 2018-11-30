@@ -1,0 +1,50 @@
+﻿<mah:MetroWindow x:Class="Library.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Library"
+        xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+        mc:Ignorable="d"
+        Title="MainWindow" Height="450" Width="800">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition></RowDefinition>
+
+
+        </Grid.RowDefinitions>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="51*">
+
+            </ColumnDefinition>
+            <ColumnDefinition Width="742*"></ColumnDefinition>
+
+        </Grid.ColumnDefinitions>
+
+        <mah:MetroAnimatedTabControl x:Name="tabControl"  Margin="20.8,0,23.6,0" Grid.Column="1">
+            <TabItem x:Name="tab1" Header="Tab 1">
+                <StackPanel Margin="10">
+                    <TextBlock Text="hello"></TextBlock>
+                    <TextBlock Text="hello"></TextBlock>
+                    <TextBlock Text="hello"></TextBlock>
+                    <TextBlock Text="hello"></TextBlock>
+                </StackPanel>
+            </TabItem>
+            <TabItem x:Name="tab2" Header="Tab 2">
+                <TextBlock Text="hello1"></TextBlock>
+            </TabItem>
+            <TabItem x:Name="tab3" Header="Tab 3">
+                <CheckBox x:Name="check3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
+            </TabItem>
+        </mah:MetroAnimatedTabControl>
+
+       
+        <mah:FlyoutsControl Name="FlyoutControlSettings" Background="Beige" Grid.ColumnSpan="2" Margin="0,0,23.6,0">
+            <mah:Flyout x:Name="yourMahAppFlyout"  Header="Flyout" Theme="Accent" Position="Left" Width="600" IsOpen="False" BorderBrush="Black" BorderThickness="3,0,3,3">
+                <TextBlock FontSize="24">Hello World</TextBlock>
+
+            </mah:Flyout>
+        </mah:FlyoutsControl>
+
+</Grid>
+</mah:MetroWindow>

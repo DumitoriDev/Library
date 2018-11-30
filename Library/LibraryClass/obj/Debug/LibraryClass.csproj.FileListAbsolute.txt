@@ -1,0 +1,11 @@
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csproj.CoreCompileInputs.cache
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\LibraryClass.dll.config
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\LibraryClass.dll
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\LibraryClass.pdb
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.dll
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.SqlServer.dll
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.xml
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\EntityFramework.SqlServer.xml
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csproj.CopyComplete
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.dll
+C:\Users\Dmitry\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.pdb
