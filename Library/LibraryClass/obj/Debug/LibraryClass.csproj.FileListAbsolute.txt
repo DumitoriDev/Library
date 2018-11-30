@@ -19,3 +19,5 @@ C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\Libra
 C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.csproj.CopyComplete
 C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.dll
 C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\obj\Debug\LibraryClass.pdb
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\LibraryClass.dll
+C:\Users\BlackMesa\Documents\GitHub\Library\Library\LibraryClass\bin\Debug\LibraryClass.pdb
