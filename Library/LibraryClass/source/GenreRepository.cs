@@ -8,13 +8,10 @@ namespace LibraryClass
 {
     public class GenreRepository : IRepository<Genre>
     {
-        private static GenreRepository _instance;
+       
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
-        private GenreRepository() { }
-        public static GenreRepository GetInstance()
-        {
-            return _instance ?? (_instance = new GenreRepository());
-        }
+        public GenreRepository() { }
+       
         public void Add(Genre genre)
         {
             _baseContext.Genres.Add(genre);

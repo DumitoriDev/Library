@@ -8,13 +8,10 @@ namespace LibraryClass
 {
     public class BookAndReaderRepository : IRepository<BookAndReader>
     {
-        private static BookAndReaderRepository _instance;
+        
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
-        private BookAndReaderRepository() { }
-        public static BookAndReaderRepository GetInstance()
-        {
-            return _instance ?? (_instance = new BookAndReaderRepository());
-        }
+        public BookAndReaderRepository() { }
+        
         public void Add(BookAndReader bookAndReader)
         {
             _baseContext.BookAndReaders.Add(bookAndReader);

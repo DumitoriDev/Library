@@ -1,34 +1,24 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 
-namespace LibraryClass
+namespace LibraryClass.source
 {
-    public class Author
+    public class AuthorRepository : IRepository<Author>
     {
-        public int Id { get; set; }
-        public string Name { get; set; }
-        public string Patronymic { get; set; }
-        public string LastName { get; set; }
-        public DateTime Birth { get; set; }
-    }
-
-    internal class AuthorRepository : IRepository<Author>
-    {
-        private static AuthorRepository _instance;
+     
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
-        private AuthorRepository() { }
-        public static AuthorRepository GetInstance()
-        {
-            return _instance ?? (_instance = new AuthorRepository());
-        }
+        public AuthorRepository() { }
+       
         public void Add(Author author)
         {
             _baseContext.Authors.Add(author);
             _baseContext.SaveChanges();
         }
 
-        public  void Delete(int id)
+        public void Delete(int id)
         {
             _baseContext.Authors.Remove(Get(id));
             _baseContext.SaveChanges();

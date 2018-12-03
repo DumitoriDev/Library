@@ -8,13 +8,10 @@ namespace LibraryClass
 {
     public class LanguageRepository : IRepository<Language>
     {
-        private static LanguageRepository _instance;
+        
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
-        private LanguageRepository() { }
-        public static LanguageRepository GetInstance()
-        {
-            return _instance ?? (_instance = new LanguageRepository());
-        }
+        public LanguageRepository() { }
+       
         public void Add(Language language)
         {
             _baseContext.Languages.Add(language);

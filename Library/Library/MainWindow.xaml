@@ -39,25 +39,19 @@
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
-                    
 
+                            <DataGridTextColumn Header="Название книги"
+                                                Binding="{Binding Name}"/>
 
-
-
-                        <!--<DataGridTextColumn Header="Имя книги"
-                                                Binding="{Binding Name}">
-                               
-                            </DataGridTextColumn>
+                            
                             <DataGridTextColumn Header="Количество страниц"
                                                 Binding="{Binding Count}" />
 
                             <DataGridTextColumn Header="Цена"
                                                 Binding="{Binding Price}" />
+                        
 
-                            <DataGridTextColumn Header="Картинка"
-                            Binding="{Binding Img.Source}" />-->
 
-                          
                         </DataGrid.Columns>
                        
                     </DataGrid>
