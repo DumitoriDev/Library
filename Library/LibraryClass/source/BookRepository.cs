@@ -51,7 +51,7 @@ namespace LibraryClass
             var tmpBooks = _baseContext.Books.ToList();
             foreach (var t in tmpBooks)
             {
-                t.Img.Source = ImageHelper.ByteToImage(t.Cover);
+                t.Img.Source = ImageHelper.BytesToImage(t.Cover);
             }
 
             return tmpBooks;

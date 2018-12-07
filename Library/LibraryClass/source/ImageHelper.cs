@@ -13,7 +13,7 @@ namespace LibraryClass
 {
     public static class ImageHelper
     {
-        public static BitmapSource ByteToImage(byte[] imageData)
+        public static BitmapSource BytesToImage(byte[] imageData)
         {
             try
             {
@@ -33,14 +33,22 @@ namespace LibraryClass
 
         public static byte[] ImageToBytes(BitmapImage imageC)
         {
-            using (MemoryStream ms = new MemoryStream())
+            try
             {
-               
-                JpegBitmapEncoder encoder = new JpegBitmapEncoder();
-                encoder.Frames.Add(BitmapFrame.Create(imageC));
-                encoder.Save(ms);
-                return ms.ToArray();
+                using (MemoryStream ms = new MemoryStream())
+                {
+
+                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                    encoder.Frames.Add(BitmapFrame.Create(imageC));
+                    encoder.Save(ms);
+                    return ms.ToArray();
+                }
             }
+            catch (Exception e)
+            {
+                return null;
+            }
+           
         }
     }
 }
