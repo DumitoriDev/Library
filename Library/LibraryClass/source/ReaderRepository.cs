@@ -24,13 +24,16 @@ namespace LibraryClass
             _baseContext.Readers.Remove(Get(id));
             _baseContext.SaveChanges();
         }
-
+        public Reader Get(Func<Reader, bool> func)
+        {
+            return _baseContext.Readers.FirstOrDefault(func);
+        }
         public Reader Get(int id)
         {
             return _baseContext.Readers.FirstOrDefault(reader => reader.Id == id);
         }
 
-        public IEnumerable<Reader> GetAll()
+        public List<Reader> GetAll()
         {
             return _baseContext.Readers.ToList();
         }

@@ -28,8 +28,11 @@ namespace LibraryClass
         {
             return _baseContext.Genres.FirstOrDefault(genre => genre.Id == id);
         }
-
-        public IEnumerable<Genre> GetAll()
+        public Genre Get(Func<Genre, bool> func)
+        {
+            return _baseContext.Genres.FirstOrDefault(func);
+        }
+        public List<Genre> GetAll()
         {
             return _baseContext.Genres.ToList();
         }

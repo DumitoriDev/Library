@@ -62,7 +62,8 @@ namespace LibraryClass
             var tmpBookAndReader = new BookAndReader
             {
                 Books = new List<Book> { tmpBook },
-                DateEnd = new List<DateTime> { new DateTime(2018, 12, 12) },
+                DateEnd = new List<UntilDate> { new UntilDate{EndTime = new DateTime(2012,12,12)}},
+                
                 ReaderId = tmpReader
 
             };

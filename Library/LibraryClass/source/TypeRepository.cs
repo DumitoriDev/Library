@@ -21,6 +21,12 @@ namespace LibraryClass
             _baseContext.SaveChanges();
         }
 
+        public Type Get(Func<Type, bool> func)
+        {
+            return _baseContext.Types.FirstOrDefault(func);
+        }
+
+
         public void Delete(int id)
         {
             _baseContext.Types.Remove(Get(id));
@@ -32,7 +38,7 @@ namespace LibraryClass
             return _baseContext.Types.FirstOrDefault(type => type.Id == id);
         }
 
-        public IEnumerable<Type> GetAll()
+        public List<Type> GetAll()
         {
             return _baseContext.Types.ToList();
         }

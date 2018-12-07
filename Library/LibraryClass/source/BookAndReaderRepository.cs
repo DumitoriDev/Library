@@ -29,7 +29,12 @@ namespace LibraryClass
             return _baseContext.BookAndReaders.FirstOrDefault(bookAndReader => bookAndReader.Id == id);
         }
 
-        public IEnumerable<BookAndReader> GetAll()
+        public BookAndReader Get(Func<BookAndReader, bool> func)
+        {
+            return _baseContext.BookAndReaders.FirstOrDefault(func);
+        }
+
+        public List<BookAndReader> GetAll()
         {
             return _baseContext.BookAndReaders.ToList();
         }

@@ -28,8 +28,11 @@ namespace LibraryClass
         {
             return _baseContext.Languages.FirstOrDefault(language => language.Id == id);
         }
-
-        public IEnumerable<Language> GetAll()
+        public Language Get(Func<Language, bool> func)
+        {
+            return _baseContext.Languages.FirstOrDefault(func);
+        }
+        public List<Language> GetAll()
         {
             return _baseContext.Languages.ToList();
         }

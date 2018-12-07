@@ -25,5 +25,6 @@ namespace LibraryClass
         public DbSet<Type> Types { get; set; }
         public DbSet<Reader> Readers { get; set; }
         public DbSet<BookAndReader> BookAndReaders { get; set; }
+        public DbSet<UntilDate> UntilDate { get; set; }
     }
 }

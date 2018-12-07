@@ -27,12 +27,18 @@ namespace LibraryClass
             _baseContext.SaveChanges();
         }
 
+        public Edition Get(Func<Edition, bool> func)
+        {
+            return _baseContext.Editions.FirstOrDefault(func);
+        }
+
+
         public Edition Get(int id)
         {
             return _baseContext.Editions.FirstOrDefault(edition => edition.Id == id);
         }
 
-        public IEnumerable<Edition> GetAll()
+        public List<Edition> GetAll()
         {
             return _baseContext.Editions.ToList();
         }

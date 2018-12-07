@@ -26,20 +26,47 @@ namespace LibraryClass
             _baseContext.SaveChanges();
         }
 
+        public void UpdateAll(List<Book> tmpbooks)
+        {
+            foreach (var book in tmpbooks)
+            {
+                this.Update(book);
+            }
+        }
         public Book Get(int id)
         {
             return _baseContext.Books.FirstOrDefault(book => book.Id == id);
         }
-
-        public IEnumerable<Book> GetAll()
+        public Book Get(Func<Book, bool> func)
+        {
+            return _baseContext.Books.FirstOrDefault(func);
+        }
+        public List<Book> GetAll()
         {
             return _baseContext.Books.ToList();
         }
 
+        public List<Book> GetAllImg()
+        {
+            var tmpBooks = _baseContext.Books.ToList();
+            foreach (var t in tmpBooks)
+            {
+                t.Img.Source = ImageHelper.ByteToImage(t.Cover);
+            }
+
+            return tmpBooks;
+        }
+
         public void Update(Book newBook)
         {
+            
             var changeable = Get(newBook.Id);
-            if (changeable == null) return;
+
+            if (changeable == null)
+            {
+                this.Add(newBook);
+                return;
+            }
 
             changeable.Name = newBook.Name;
             changeable.AuthorId = newBook.AuthorId;

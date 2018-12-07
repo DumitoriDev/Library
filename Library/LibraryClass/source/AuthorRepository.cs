@@ -28,8 +28,11 @@ namespace LibraryClass.source
         {
             return _baseContext.Authors.FirstOrDefault(author => author.Id == id);
         }
-
-        public IEnumerable<Author> GetAll()
+        public Author Get(Func<Author, bool> func)
+        {
+            return _baseContext.Authors.FirstOrDefault(func);
+        }
+        public List<Author> GetAll()
         {
             return _baseContext.Authors.ToList();
         }

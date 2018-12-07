@@ -8,6 +8,7 @@
         xmlns:libraryClass="clr-namespace:LibraryClass;assembly=LibraryClass"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
+   
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition>
@@ -20,19 +21,34 @@
             </ColumnDefinition>
         </Grid.ColumnDefinitions>
 
-        <mah:MetroAnimatedTabControl x:Name="tabControl"  Margin="20.8,0,23.6,0" Grid.Column="1">
-            <TabItem x:Name="tabBooks" Header="Книги">
-                <Grid>
-                    <DataGrid Name="GridBooks"  ItemsSource="{Binding Path=Books}" Margin="10,20,10,0"
+
+
+
+        <mah:MetroAnimatedTabControl x:Name="TabControl"  Margin="20" >
+            
+            <TabItem x:Name="tabBooks" Header="Книги" >
+                <Grid Margin="0,0,-20,0" >
+                   
+                    <Grid.RowDefinitions>
+                        <RowDefinition>
+
+                        </RowDefinition>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition>
+
+
+
+                        </ColumnDefinition>
+                    </Grid.ColumnDefinitions>
+
+                    <DataGrid Name="GridBooks"  ItemsSource="{Binding Path=Books}" 
                               AutoGenerateColumns="False"
-                              Style="{StaticResource AzureDataGrid}" SelectionChanged="GridBooks_OnSelectionChanged">
+                              Style="{StaticResource AzureDataGrid}" SelectionChanged="GridBooks_OnSelectionChanged" AddingNewItem="GridBooks_AddingNewItem" SelectedItem = "{Binding SelectedItem, Mode = TwoWay}" Grid.Column="0" Margin="30,30,279,30">
                         <DataGrid.Columns>
 
 
-
-
-
-                            <DataGridTemplateColumn Header="Image">
+                            <DataGridTemplateColumn Header="Обложка">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
                                         <Image Height="25" Width="50" Source="{Binding Img.Source}" />
@@ -41,21 +57,108 @@
                             </DataGridTemplateColumn>
 
                             <DataGridTextColumn Header="Название книги"
-                                                Binding="{Binding Name}"/>
+                                                Binding="{Binding Name}" />
 
-                            
+
                             <DataGridTextColumn Header="Количество страниц"
                                                 Binding="{Binding Count}" />
 
+                            <DataGridTextColumn Header="Тип"
+                                                Binding="{Binding TypeId.Name}" />
+
                             <DataGridTextColumn Header="Цена"
                                                 Binding="{Binding Price}" />
-                        
+
+
+                            <DataGridTextColumn Header="Издательство"
+                                                    Binding="{Binding EditionId.Name}" />
+
+                            <DataGridTextColumn Header="Язык"
+                                                    Binding="{Binding LanguageId.Name}" />
+
+                            <DataGridTextColumn Header="Год написания"
+                                                Binding="{Binding Date}" />
+
 
 
                         </DataGrid.Columns>
-                       
+
+
+                        <DataGrid.ContextMenu >
+                            <ContextMenu >
+                                <MenuItem Header="Добавить картинку к выбраной ячейке" Click="MenuItem_OnClick"></MenuItem>
+                                <MenuItem Header="Показать подробную информацию" Click="MenuItem_OnClick_Info"></MenuItem>
+                            </ContextMenu>
+
+                        </DataGrid.ContextMenu>
                     </DataGrid>
+
+
+
+
+                    <mah:Flyout x:Name="FlyoutInfo" Header="Подробная информация" Position="Right"  Theme="Dark" IsOpen="False" Width="641" Margin="0,10,0,0" ClosingFinished="FlyoutInfo_OnClosingFinished">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition>
+
+                                </RowDefinition>
+                                <RowDefinition>
+
+                                </RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition>
+
+
+
+                                </ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+
+                            <Image  x:Name="mainImage" Grid.Column="1" Margin="59,0,62,5" Width="200">
+                                <Image.Source>
+                                    <FormatConvertedBitmap Source="http://mirpozitiva.ru/uploads/posts/2016-09/medium/1474011210_15.jpg"
+                                                               DestinationFormat="Gray32Float" />
+                                </Image.Source>
+                            </Image>
+
+                            <TextBox Name="DescBook" Grid.Column="1" Grid.Row="1" mah:TextBoxHelper.ClearTextButton="True" Text="hello" Margin="10" />
+
+                            <DataGrid Grid.Row="0" Grid.Column="0" Name="GridAuthor" ItemsSource="{Binding Authors}" AutoGenerateColumns="False" Margin="0,10,10,10" >
+
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Имя автора"
+                                                        Binding="{Binding Name}" />
+                                    <DataGridTextColumn Header="Отчество"
+                                                        Binding="{Binding Patronymic}" />
+                                    <DataGridTextColumn Header="Фамилия"
+                                                        Binding="{Binding LastName}" />
+                                    <DataGridTextColumn Header="День рождения"
+                                                        Binding="{Binding Birth}" />
+                                </DataGrid.Columns>
+
+                            </DataGrid>
+
+                            <DataGrid Grid.Column="0" Grid.Row="1" Name="GridGenre" ItemsSource="{Binding Authors}" AutoGenerateColumns="False" Margin="0,10,10,10" >
+
+
+                                <DataGrid.Columns>
+                                    <DataGridTextColumn Header="Жанр"
+                                                        Binding="{Binding Name}" Width="350"/>
+
+                                </DataGrid.Columns>
+
+                            </DataGrid>
+                        </Grid>
+
+                    </mah:Flyout>
+
+
                 </Grid>
+
             </TabItem>
             <TabItem x:Name="tab2" Header="Читатели">
                 <TextBlock Text="hello1"></TextBlock>
@@ -64,12 +167,15 @@
                 <CheckBox x:Name="check3" HorizontalAlignment="Left" VerticalAlignment="Top"/>
             </TabItem>
             <TabItem Header="image">
-                
+
             </TabItem>
+
+
+
         </mah:MetroAnimatedTabControl>
 
-       
-       
 
-</Grid>
+
+
+    </Grid>
 </mah:MetroWindow>
