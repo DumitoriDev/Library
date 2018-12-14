@@ -8,13 +8,11 @@ namespace LibraryClass
         public int Id { get; set; }
 
         public string Password { get; set; }
-        public int Books { get; set; }
+        public virtual ICollection<BookAndReader> BookAndReaders { get; set; }
         public string Name { get; set; }
         public string LastName { get; set; }
         public string NumberDocument { get; set; }
         public string Phone { get; set; }
     }
-
-
-   
+    
 }

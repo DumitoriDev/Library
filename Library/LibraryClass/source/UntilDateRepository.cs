@@ -28,6 +28,7 @@ namespace LibraryClass
         {
             return _baseContext.UntilDate.FirstOrDefault(func);
         }
+
         public UntilDate Get(int id)
         {
             return _baseContext.UntilDate.FirstOrDefault(date => date.Id == id);
@@ -46,6 +47,11 @@ namespace LibraryClass
            
             _baseContext.Entry(changeable).State = System.Data.Entity.EntityState.Modified;
             _baseContext.SaveChanges();
+        }
+
+        public static bool Check(UntilDate date)
+        {
+            return date.EndTime > DateTime.MinValue;
         }
 
        

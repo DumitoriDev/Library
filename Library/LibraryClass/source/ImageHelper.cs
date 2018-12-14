@@ -17,34 +17,42 @@ namespace LibraryClass
         {
             try
             {
-                using (MemoryStream ms = new MemoryStream(imageData))
+                using (var ms = new MemoryStream(imageData))
                 {
                     var decoder = BitmapDecoder.Create(ms,
                         BitmapCreateOptions.PreservePixelFormat, BitmapCacheOption.OnLoad);
                     return decoder.Frames[0];
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return null;
             }
            
         }
 
+
+        public static byte[] ImageToBytes(string src)
+        {
+           
+           return File.ReadAllBytes(src);
+               
+        }
+
         public static byte[] ImageToBytes(BitmapImage imageC)
         {
             try
             {
-                using (MemoryStream ms = new MemoryStream())
+                using (var ms = new MemoryStream())
                 {
 
-                    JpegBitmapEncoder encoder = new JpegBitmapEncoder();
+                    var encoder = new JpegBitmapEncoder();
                     encoder.Frames.Add(BitmapFrame.Create(imageC));
                     encoder.Save(ms);
                     return ms.ToArray();
                 }
             }
-            catch (Exception e)
+            catch 
             {
                 return null;
             }

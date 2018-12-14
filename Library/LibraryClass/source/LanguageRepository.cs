@@ -10,7 +10,7 @@ namespace LibraryClass
     {
         
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
-        public LanguageRepository() { }
+        
        
         public void Add(Language language)
         {
@@ -28,10 +28,12 @@ namespace LibraryClass
         {
             return _baseContext.Languages.FirstOrDefault(language => language.Id == id);
         }
+
         public Language Get(Func<Language, bool> func)
         {
             return _baseContext.Languages.FirstOrDefault(func);
         }
+
         public List<Language> GetAll()
         {
             return _baseContext.Languages.ToList();
@@ -46,5 +48,12 @@ namespace LibraryClass
             _baseContext.Entry(changeable).State = System.Data.Entity.EntityState.Modified;
             _baseContext.SaveChanges();
         }
+
+        public static bool Check(Language language)
+        {
+            return !string.IsNullOrEmpty(language.Name);
+        }
+
+       
     }
 }

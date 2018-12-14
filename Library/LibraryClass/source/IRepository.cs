@@ -13,6 +13,7 @@ namespace LibraryClass
         void Delete(int id);
         void Add(T item);
         List<T> GetAll();
+        
     }
 
 }

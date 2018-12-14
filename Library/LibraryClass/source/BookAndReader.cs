@@ -8,9 +8,10 @@ namespace LibraryClass
     public class BookAndReader
     {
         public int Id { get; set; }
-        public virtual ICollection<Book> Books { get; set; }
-        public Reader ReaderId { get; set; }
-        public virtual ICollection<UntilDate> DateEnd { get; set; }
+       
+        public virtual ICollection<Reader> Readers { get; set; }
+        public virtual Book Book { get; set; }
+        public virtual UntilDate DateEnd { get; set; }
     }
 
    

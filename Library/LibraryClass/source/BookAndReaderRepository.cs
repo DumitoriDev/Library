@@ -10,6 +10,7 @@ namespace LibraryClass
     {
         
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
+
         public BookAndReaderRepository() { }
         
         public void Add(BookAndReader bookAndReader)
@@ -43,12 +44,25 @@ namespace LibraryClass
         {
             var changeable = Get(newBookAndReader.Id);
             if (changeable == null) return;
-            changeable.ReaderId = newBookAndReader.ReaderId;
-            changeable.Books = newBookAndReader.Books;
+            
+            changeable.Readers = newBookAndReader.Readers;
             changeable.DateEnd = newBookAndReader.DateEnd;
 
             _baseContext.Entry(changeable).State = System.Data.Entity.EntityState.Modified;
             _baseContext.SaveChanges();
         }
+
+        public static bool Check(BookAndReader bookAndReader)
+        {
+            return ReaderRepository.CheckAll(bookAndReader.Readers) && UntilDateRepository.Check(bookAndReader.DateEnd);
+        }
+        
+        public static bool Check(IEnumerable<BookAndReader >bookAndReaders)
+        {
+            return bookAndReaders.All(Check);
+        }
+
+
+
     }
 }

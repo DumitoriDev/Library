@@ -6,9 +6,10 @@
         xmlns:local="clr-namespace:Library"
         xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
         xmlns:libraryClass="clr-namespace:LibraryClass;assembly=LibraryClass"
+        xmlns:iconPacks="http://metro.mahapps.com/winfx/xaml/iconpacks"
         mc:Ignorable="d"
         Title="MainWindow" Height="450" Width="800">
-   
+
     <Grid>
         <Grid.RowDefinitions>
             <RowDefinition>
@@ -21,60 +22,119 @@
             </ColumnDefinition>
         </Grid.ColumnDefinitions>
 
+        <Menu Height="30" VerticalAlignment="Top">
+            <MenuItem Header="Инструменты" Height="30" Width="102">
+                <MenuItem Header="Сохранить изменения в книгах" Click="MenuItem_OnClick_Save" ></MenuItem>
+                <MenuItem Header="Сохранить изменения в читателях" Click="MenuItem_OnClick_Save_Reader" ></MenuItem>
+                <MenuItem Header="Сохранить всё" Click=" MenuItem_OnClick_Save_All" ></MenuItem>
+                <MenuItem Header="Open Project" >
+                    <MenuItem Header="WinForms"></MenuItem>
+                    <MenuItem Header="WPF" ></MenuItem>
+                </MenuItem>
+                <Separator />
+                <MenuItem Header="Exit" >
+
+                </MenuItem>
+            </MenuItem>
+            <MenuItem Header="Edit"  >
+                <MenuItem Header="Добавление жанра" Click="MenuItem_OnClick_Add_New_Genre" ></MenuItem>
+                <MenuItem Header="Добавление автора" Click="MenuItem_OnClick_Add_New_Author" ></MenuItem>
+            </MenuItem>
+            <MenuItem Header="View"  ></MenuItem>
+        </Menu>
 
 
+        <mah:MetroAnimatedTabControl x:Name="TabControl"  Margin="14,35,26,5" >
 
-        <mah:MetroAnimatedTabControl x:Name="TabControl"  Margin="20" >
-            
-            <TabItem x:Name="tabBooks" Header="Книги" >
+            <TabItem x:Name="tabBooks" Header="Книги">
                 <Grid Margin="0,0,-20,0" >
-                   
+
                     <Grid.RowDefinitions>
-                        <RowDefinition>
+                        <RowDefinition Height="139*">
 
                         </RowDefinition>
+                        <RowDefinition Height="33*"></RowDefinition>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition>
+                        <ColumnDefinition Width="21*">
 
 
 
                         </ColumnDefinition>
+                        <ColumnDefinition Width="21*"/>
+                        <ColumnDefinition Width="151*"/>
+
+
                     </Grid.ColumnDefinitions>
 
-                    <DataGrid Name="GridBooks"  ItemsSource="{Binding Path=Books}" 
+
+
+                    <DataGrid Name="GridBooks" CurrentCellChanged="GridBooks_OnCurrentCellChanged" ItemsSource="{Binding Path=Books}" 
                               AutoGenerateColumns="False"
-                              Style="{StaticResource AzureDataGrid}" SelectionChanged="GridBooks_OnSelectionChanged" AddingNewItem="GridBooks_AddingNewItem" SelectedItem = "{Binding SelectedItem, Mode = TwoWay}" Grid.Column="0" Margin="30,30,279,30">
+                              Style="{StaticResource AzureDataGrid}" AddingNewItem="GridBooks_AddingNewItem" SelectedItem = "{Binding SelectedItem, Mode = TwoWay}" Grid.Column="0" Margin="10,30,10,3" Grid.ColumnSpan="3">
                         <DataGrid.Columns>
 
 
                             <DataGridTemplateColumn Header="Обложка">
                                 <DataGridTemplateColumn.CellTemplate>
                                     <DataTemplate>
-                                        <Image Height="25" Width="50" Source="{Binding Img.Source}" />
+                                        <Image Height="50" Width="50" Source="{Binding Img.Source}" />
                                     </DataTemplate>
                                 </DataGridTemplateColumn.CellTemplate>
                             </DataGridTemplateColumn>
+
+
 
                             <DataGridTextColumn Header="Название книги"
                                                 Binding="{Binding Name}" />
 
 
                             <DataGridTextColumn Header="Количество страниц"
+                                                Binding="{Binding Pages}" />
+
+
+                            <DataGridTextColumn Header="Рейтинг"
+                                                Binding="{Binding Rate}" />
+
+                            <DataGridTextColumn Header="Количество"
                                                 Binding="{Binding Count}" />
 
-                            <DataGridTextColumn Header="Тип"
-                                                Binding="{Binding TypeId.Name}" />
+
+                            <DataGridTemplateColumn Header="Тип" x:Name="ComboBoxType">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding Path=Types}" DisplayMemberPath="Name" SelectedItem="{Binding Type}" SelectionChanged="Selector_OnSelectionChanged">
+
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
 
                             <DataGridTextColumn Header="Цена"
                                                 Binding="{Binding Price}" />
 
 
-                            <DataGridTextColumn Header="Издательство"
-                                                    Binding="{Binding EditionId.Name}" />
+                            <DataGridTemplateColumn Header="Издание" x:Name="ComboBoxEdition">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+                                        <ComboBox ItemsSource="{Binding Path=Editions}" DisplayMemberPath="Name" SelectedItem="{Binding Edition}" SelectionChanged="Selector_OnSelectionChanged">
 
-                            <DataGridTextColumn Header="Язык"
-                                                    Binding="{Binding LanguageId.Name}" />
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
+
+                            <DataGridTemplateColumn Header="Язык" x:Name="ComboBoxLang">
+                                <DataGridTemplateColumn.CellTemplate>
+                                    <DataTemplate>
+
+                                        <ComboBox ItemsSource="{Binding Path=Languages}" DisplayMemberPath="Name" SelectedItem="{Binding Language}" SelectionChanged="Selector_OnSelectionChanged">
+
+                                        </ComboBox>
+                                    </DataTemplate>
+                                </DataGridTemplateColumn.CellTemplate>
+                            </DataGridTemplateColumn>
 
                             <DataGridTextColumn Header="Год написания"
                                                 Binding="{Binding Date}" />
@@ -86,17 +146,32 @@
 
                         <DataGrid.ContextMenu >
                             <ContextMenu >
-                                <MenuItem Header="Добавить картинку к выбраной ячейке" Click="MenuItem_OnClick"></MenuItem>
+                                <MenuItem Header="Добавить картинку к выбраной ячейке" Click="MenuItem_OnClick_Add_Image"></MenuItem>
                                 <MenuItem Header="Показать подробную информацию" Click="MenuItem_OnClick_Info"></MenuItem>
+
+                                <MenuItem Header="Удалить книгу" Click="MenuItem_OnClick_Delete"></MenuItem>
                             </ContextMenu>
 
                         </DataGrid.ContextMenu>
                     </DataGrid>
+                    <Button Name="ArrowRight"     Width="Auto" Margin="10"
+                              Grid.Row="1" Height="Auto" Grid.Column="1" Click="ArrowRight_Click"  >
+                        <iconPacks:PackIconMaterial Kind="ArrowRight" Height="30" Width="50">
+
+                        </iconPacks:PackIconMaterial>
+                    </Button>
+
+                    <Button Name="ArrowLeft" mah:ControlsHelper.MouseOverBorderBrush="{DynamicResource BlackBrush}"  Width="Auto" Margin="10" Height="Auto" Grid.Row="1"
+                            Grid.Column="0" Click="ArrowLeft_Click">
+                        <iconPacks:PackIconMaterial Kind="ArrowLeft" Height="30" Width="50">
+
+                        </iconPacks:PackIconMaterial>
+                    </Button>
 
 
 
-
-                    <mah:Flyout x:Name="FlyoutInfo" Header="Подробная информация" Position="Right"  Theme="Dark" IsOpen="False" Width="641" Margin="0,10,0,0" ClosingFinished="FlyoutInfo_OnClosingFinished">
+                    <mah:Flyout x:Name="FlyoutInfo" Header="Подробная информация" Position="Right"  Theme="Dark" IsOpen="False" Width="627" Margin="0,0,0,10" ClosingFinished="FlyoutInfo_OnClosingFinished" Grid.Column="1"
+                                Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
 
                         <Grid>
                             <Grid.RowDefinitions>
@@ -117,32 +192,32 @@
                             </Grid.ColumnDefinitions>
 
 
-                            <Image  x:Name="mainImage" Grid.Column="1" Margin="59,0,62,5" Width="200">
-                                <Image.Source>
-                                    <FormatConvertedBitmap Source="http://mirpozitiva.ru/uploads/posts/2016-09/medium/1474011210_15.jpg"
-                                                               DestinationFormat="Gray32Float" />
-                                </Image.Source>
+                            <Image  x:Name="CoverGrid" Grid.Column="1" Margin="59,0,62,5" Width="200">
+
                             </Image>
 
-                            <TextBox Name="DescBook" Grid.Column="1" Grid.Row="1" mah:TextBoxHelper.ClearTextButton="True" Text="hello" Margin="10" />
 
-                            <DataGrid Grid.Row="0" Grid.Column="0" Name="GridAuthor" ItemsSource="{Binding Authors}" AutoGenerateColumns="False" Margin="0,10,10,10" >
+
+                            <DataGrid Grid.Row="0" Grid.Column="0" Name="GridAuthor"  AutoGenerateColumns="False" Margin="0,0,10,10" 
+                             IsReadOnly="True">
 
 
                                 <DataGrid.Columns>
-                                    <DataGridTextColumn Header="Имя автора"
-                                                        Binding="{Binding Name}" />
-                                    <DataGridTextColumn Header="Отчество"
-                                                        Binding="{Binding Patronymic}" />
-                                    <DataGridTextColumn Header="Фамилия"
-                                                        Binding="{Binding LastName}" />
-                                    <DataGridTextColumn Header="День рождения"
-                                                        Binding="{Binding Birth}" />
+
+                                    <DataGridTextColumn Header="Автор"
+                                                        Binding="{Binding Name}" Width="350"/>
                                 </DataGrid.Columns>
 
+                                <DataGrid.ContextMenu >
+                                    <ContextMenu >
+                                        <MenuItem Header="Добавить автора" Click="MenuItem_OnClick_Add_Author"></MenuItem>
+                                        <MenuItem Header="Удалить автора" Click="MenuItem_OnClick_Delete_Author"></MenuItem>
+                                    </ContextMenu>
+
+                                </DataGrid.ContextMenu>
                             </DataGrid>
 
-                            <DataGrid Grid.Column="0" Grid.Row="1" Name="GridGenre" ItemsSource="{Binding Authors}" AutoGenerateColumns="False" Margin="0,10,10,10" >
+                            <DataGrid Grid.Column="0" Grid.Row="1" Name="GridGenre" AutoGenerateColumns="False" Margin="0,10,10,10" IsReadOnly="True">
 
 
                                 <DataGrid.Columns>
@@ -151,7 +226,20 @@
 
                                 </DataGrid.Columns>
 
+                                <DataGrid.ContextMenu >
+                                    <ContextMenu >
+                                        <MenuItem Header="Добавить жанр" Click="MenuItem_OnClick_Add_Genre"></MenuItem>
+                                        <MenuItem Header="Удалить жанр" Click="MenuItem_OnClick_Delete_Genre"></MenuItem>
+                                    </ContextMenu>
+
+                                </DataGrid.ContextMenu>
+
                             </DataGrid>
+                            <DockPanel Grid.Column="1" Grid.Row="1">
+                                <TextBox x:Name="DescBook" mah:TextBoxHelper.ClearTextButton="True" Text="hello" Margin="10" AcceptsReturn="True" VerticalScrollBarVisibility="Auto"
+                                     HorizontalScrollBarVisibility="Auto" SpellCheck.IsEnabled="True" Language="ru-ru" TextWrapping="Wrap" />
+                            </DockPanel>
+
                         </Grid>
 
                     </mah:Flyout>
@@ -161,7 +249,119 @@
 
             </TabItem>
             <TabItem x:Name="tab2" Header="Читатели">
-                <TextBlock Text="hello1"></TextBlock>
+
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="187*"/>
+                        <ColumnDefinition Width="189*"/>
+                        <ColumnDefinition />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="283*"/>
+                        <RowDefinition Height="61*"/>
+                    </Grid.RowDefinitions>
+
+
+                    <DataGrid Name="GridReaders" ItemsSource="{Binding Path=Readers}" 
+                              AutoGenerateColumns="False"
+                              Style="{StaticResource AzureDataGrid}" AddingNewItem="GridReaders_OnAddingNewItem"  SelectedItem = "{Binding SelectedItem, Mode = TwoWay}" Grid.Column="0" Margin="10" Grid.RowSpan="1" Grid.ColumnSpan="3">
+                        <DataGrid.Columns>
+
+                            <DataGridTextColumn Header="Имя"
+                                                Binding="{Binding Name}" />
+
+
+                            <DataGridTextColumn Header="Фамилия"
+                                                Binding="{Binding LastName}" />
+
+                            <DataGridTextColumn Header="Телефон"
+                                                Binding="{Binding Phone}" />
+
+                            <DataGridTextColumn Header="Номер паспорта"
+                                                Binding="{Binding NumberDocument}" />
+
+
+
+
+
+                        </DataGrid.Columns>
+
+                        <DataGrid.ContextMenu >
+                            <ContextMenu >
+                                <MenuItem Header="Показать информацию" Click="MenuItem_OnClick_Info_Reader"></MenuItem>
+                                <MenuItem Header="Удалить читателя" Click="MenuItem_OnClick_Delete_Author"></MenuItem>
+                            </ContextMenu>
+
+                        </DataGrid.ContextMenu>
+                    </DataGrid>
+
+                    <mah:Flyout x:Name="FlyoutInfoReader" Header="Подробная информация" Position="Right"  Theme="Accent"  IsOpen="False" Width="627" Margin="0,0,-248,10" ClosingFinished="FlyoutInfo_OnClosingFinished_Reader" Grid.Column="1"
+                                Grid.Row="0" Grid.RowSpan="2" Grid.ColumnSpan="2">
+
+                        <Grid>
+                            <Grid.RowDefinitions>
+                                <RowDefinition>
+
+                                </RowDefinition>
+                                <RowDefinition>
+
+                                </RowDefinition>
+                            </Grid.RowDefinitions>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition>
+
+
+
+                                </ColumnDefinition>
+                                <ColumnDefinition></ColumnDefinition>
+                            </Grid.ColumnDefinitions>
+
+                            <DataGrid Grid.Row="0" Grid.Column="0" Name="GridInfoLogin"  AutoGenerateColumns="False" Margin="0,0,10,10" 
+                                      CanUserAddRows="False" Grid.ColumnSpan="2">
+
+
+                                <DataGrid.Columns>
+
+                                    <DataGridTextColumn Header="Логин"
+                                                        Binding="{Binding Id}" Width="100" IsReadOnly="True"/>
+
+                                    <DataGridTextColumn Header="Пароль"
+                                                        Binding="{Binding Password}" Width="100"/>
+                                </DataGrid.Columns>
+
+
+                            </DataGrid>
+
+                            <DataGrid Grid.Row="1" Grid.Column="0" Name="GridInfoBooks"  AutoGenerateColumns="False" Margin="0,9,10,10" 
+                                      CanUserAddRows="False" Grid.ColumnSpan="2" IsReadOnly="True">
+
+
+                                <DataGrid.Columns>
+
+                                    <DataGridTextColumn Header="Название книги"
+                                                        Binding="{Binding Path=Book.Name}" Width="150"/>
+
+                                    <DataGridTextColumn Header="Издательство"
+                                                        Binding="{Binding Path=Book.Edition.Name}" Width="150"/>
+
+                                    <DataGridTextColumn Header="Дата возврата"
+                                                        Binding="{Binding Path=DateEnd.EndTime}" Width="150"/>
+                                </DataGrid.Columns>
+
+                                <DataGrid.ContextMenu >
+                                    <ContextMenu >
+                                        <MenuItem Header="Добавить книгу" Click="MenuItem_OnClick_Add_Book"></MenuItem>
+                                        <MenuItem Header="Принять книгу" Click="MenuItem_OnClick_Take_Book" ></MenuItem>
+                                    </ContextMenu>
+
+                                </DataGrid.ContextMenu>
+                            </DataGrid>
+
+                        </Grid>
+
+                    </mah:Flyout>
+                </Grid>
+
             </TabItem>
             <TabItem x:Name="tab3" Header="Должники">
                 <CheckBox x:Name="check3" HorizontalAlignment="Left" VerticalAlignment="Top"/>

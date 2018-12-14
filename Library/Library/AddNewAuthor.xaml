@@ -1,0 +1,20 @@
+﻿<mah:MetroWindow x:Class="Library.AddNewAuthor"
+                 xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+                 xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                 xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+                 xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+                 xmlns:local="clr-namespace:Library"
+                 xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
+                 mc:Ignorable="d"
+                 Title="AddAuthor" Height="81.524" Width="391.429">
+    <Grid>
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="99*"/>
+            <ColumnDefinition Width="284*"/>
+        </Grid.ColumnDefinitions>
+        <Button Content="OK" Click="ButtonBase_OnClick"></Button>
+        <TextBox Name="TextBox" Grid.Column="1" Margin="10,0">
+
+        </TextBox>
+    </Grid>
+</mah:MetroWindow>

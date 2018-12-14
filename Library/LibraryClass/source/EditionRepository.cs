@@ -52,5 +52,17 @@ namespace LibraryClass
             _baseContext.Entry(changeable).State = System.Data.Entity.EntityState.Modified;
             _baseContext.SaveChanges();
         }
+
+        public static bool Check(Edition edition )
+        {
+            return !string.IsNullOrEmpty(edition.Name);
+        }
+
+
+        public static bool CheckAll(IEnumerable<Edition> editions)
+        {
+            return editions.All(Check);
+        }
+
     }
 }

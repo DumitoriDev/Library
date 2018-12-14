@@ -8,13 +8,14 @@ namespace LibraryClass
 {
     public class TypeRepository : IRepository<Type>
     {
-        private static TypeRepository _instance;
+        
+
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
-        private TypeRepository() { }
-        public static TypeRepository GetInstance()
-        {
-            return _instance ?? (_instance = new TypeRepository());
-        }
+
+       
+
+        
+
         public void Add(Type type)
         {
             _baseContext.Types.Add(type);
@@ -25,8 +26,7 @@ namespace LibraryClass
         {
             return _baseContext.Types.FirstOrDefault(func);
         }
-
-
+        
         public void Delete(int id)
         {
             _baseContext.Types.Remove(Get(id));
@@ -51,6 +51,11 @@ namespace LibraryClass
 
             _baseContext.Entry(changeable).State = System.Data.Entity.EntityState.Modified;
             _baseContext.SaveChanges();
+        }
+
+        public static bool Check(Type type)
+        {
+            return !string.IsNullOrEmpty(type.Name);
         }
     }
 }
