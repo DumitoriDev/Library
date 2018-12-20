@@ -28,27 +28,20 @@ namespace Library
         private readonly Reader _reader;
         public AddBook(Reader tmpreader)
         {
-            try
-            {
-                InitializeComponent();
-                this._reader = tmpreader;
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Error");
-            }
+            InitializeComponent();
+            this._reader = tmpreader;
 
         }
 
 
 
-        private async void  ButtonBase_OnClick(object sender, RoutedEventArgs e)
+        private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
                 if (string.IsNullOrEmpty(ComboBoxAuthor.Text) || string.IsNullOrEmpty(ComboBoxName.Text))
                 {
-                    await this.ShowMessageAsync("Error", "Вы ввели пустые или неправильные данные!");
+                    MessageBox.Show("Вы ввели пустые данные!", "Error");
                     return;
                 }
 
@@ -58,7 +51,7 @@ namespace Library
 
                 if (bookTmp is null)
                 {
-                    await this.ShowMessageAsync("Error", "Книга не найдена!");
+                    MessageBox.Show("Произведение не найдено!", "Error");
                     return;
                 }
 
@@ -73,25 +66,25 @@ namespace Library
                           DateTime.Now.AddDays(Convert.ToInt16(this.Days.Value)) && reader.DateEnd.StartTime == DateTime.Now) ?? new BookAndReader
                           {
                               Book = bookTmp,
-                              DateEnd = new UntilDate { EndTime = DateTime.Now.AddDays(Convert.ToInt16(this.Days.Value)),StartTime = DateTime.Now }
+                              DateEnd = new UntilDate { EndTime = DateTime.Now.AddDays(Convert.ToInt16(this.Days.Value)), StartTime = DateTime.Now }
                           };
 
                     this._readerRepository.Add(readerTmp);
                     this._reader.BookAndReaders.Add(readerTmp);
 
-                    await this.ShowMessageAsync("Info", "Добавление завершено!");
+                    
                 }
 
                 else
                 {
-                   await this.ShowMessageAsync("Info", "Количество данной книги равно 0");
+                    MessageBox.Show("Количество данного произведения равно 0!", "Error");
                 }
 
                 this.Close();
             }
             catch (Exception exception)
             {
-              await this.ShowMessageAsync("Error", exception.Message);
+                MessageBox.Show(exception.Message, "Error");
             }
 
 

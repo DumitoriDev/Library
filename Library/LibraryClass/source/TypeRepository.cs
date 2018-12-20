@@ -8,13 +8,14 @@ namespace LibraryClass
 {
     public class TypeRepository : IRepository<Type>
     {
-        
+
 
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
 
-       
-
-        
+        public int GetSize()
+        {
+            return this._baseContext.Types.Count();
+        }
 
         public void Add(Type type)
         {
@@ -26,7 +27,7 @@ namespace LibraryClass
         {
             return _baseContext.Types.FirstOrDefault(func);
         }
-        
+
         public void Delete(int id)
         {
             _baseContext.Types.Remove(Get(id));

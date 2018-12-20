@@ -26,23 +26,18 @@ namespace Library
 
         public AddGenre(ICollection<Genre> genres)
         {
-            try
-            {
-                InitializeComponent();
-                this._genres = genres;
-                ComboBox.ItemsSource = new GenreRepository().GetAll();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Error");
-            }
-           
+
+            InitializeComponent();
+            this._genres = genres;
+            ComboBox.ItemsSource = new GenreRepository().GetAll();
+
         }
-        
+
         private void ComboBox_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             try
             {
+               
                 var res = (sender as ComboBox)?.SelectedItem;
                 if (_genres.All(author => res != null && author.Id != ((Genre)res).Id))
                 {
@@ -61,6 +56,6 @@ namespace Library
             this.Close();
         }
 
-        
+
     }
 }

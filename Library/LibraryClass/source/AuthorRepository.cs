@@ -34,10 +34,10 @@ namespace LibraryClass.source
             return _baseContext.Authors.FirstOrDefault(func);
         }
 
-        //public List<Author> GetBookAuthor(Book book)
-        //{
-        //    return this._baseContext.Authors.Where(author => author.Books.Any(book1 => book.Id ) )
-        //}
+        public int GetSize()
+        {
+            return this._baseContext.Authors.Count();
+        }
 
         public List<Author> GetAll()
         {

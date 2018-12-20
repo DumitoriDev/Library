@@ -54,6 +54,10 @@ namespace LibraryClass
             return !string.IsNullOrEmpty(language.Name);
         }
 
-       
+        public bool Check(Func<Language, bool> func)
+        {
+            return _baseContext.Languages.All(func);
+        }
+
     }
 }

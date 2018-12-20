@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -38,6 +39,12 @@ namespace LibraryClass
             return _baseContext.Readers.ToList();
         }
 
+
+        public List<Reader> GetAll(Func<Reader, bool> func)
+        {
+            return _baseContext.Readers.Where(func).ToList();
+        }
+
         public void Update(Reader newReader)
         {
             var changeable = this.Get(newReader.Id);
@@ -74,5 +81,15 @@ namespace LibraryClass
             return reader.All(Check);
         }
 
+        public List<Reader> GetRange(int from, int before)
+        {
+            return _baseContext.Readers.OrderBy(reader => reader.Id).Skip(() => from).Take(() => before).ToList();
+        }
+
+
+        public int GetSize()
+        {
+            return this._baseContext.Readers.Count();
+        }
     }
 }

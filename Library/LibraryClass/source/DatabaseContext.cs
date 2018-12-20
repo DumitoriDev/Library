@@ -4,7 +4,8 @@ namespace LibraryClass
 {
     public class DataBaseContext:DbContext
     {
-        private DataBaseContext() : base("connStr") { }
+        public static string connStr;
+        private DataBaseContext() : base(connStr) { }
         private static DataBaseContext _instance;
         public static DataBaseContext GetInstance()
         {

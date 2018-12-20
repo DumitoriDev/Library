@@ -8,9 +8,9 @@ using System.Windows;
 // набора атрибутов. Измените значения этих атрибутов, чтобы изменить сведения,
 // связанные со сборкой.
 [assembly: AssemblyTitle("Library")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Приложение для библиотеки")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyCompany("")]
+[assembly: AssemblyCompany("ChegoGlush")]
 [assembly: AssemblyProduct("Library")]
 [assembly: AssemblyCopyright("Copyright ©  2018")]
 [assembly: AssemblyTrademark("")]

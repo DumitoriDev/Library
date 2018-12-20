@@ -17,19 +17,16 @@ using MahApps.Metro.Controls;
 namespace Library
 {
     /// <summary>
-    /// Логика взаимодействия для AddNewGenre.xaml
+    /// Логика взаимодействия для AddNewLanguage.xaml
     /// </summary>
-    public partial class AddNewGenre : MetroWindow
+    public partial class AddNewLanguage : MetroWindow
     {
-        private readonly GenreRepository _genreRepository = new GenreRepository();
 
+        private readonly LanguageRepository _languageRepository = new LanguageRepository();
         public bool Status = false;
-
-        public AddNewGenre()
+        public AddNewLanguage()
         {
-          
-                InitializeComponent();
-               
+            InitializeComponent();
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -42,22 +39,23 @@ namespace Library
                     return;
                 }
 
-                if (_genreRepository.Check(genre => genre.Name != this.TextBox.Text))
+                if (this._languageRepository.Check(lang => lang.Name != this.TextBox.Text))
                 {
-                    var tmp = new Genre { Name = this.TextBox.Text };
-                    this._genreRepository.Add(tmp);
+                    this._languageRepository.Add(new Language { Name = this.TextBox.Text });
                     this.Status = true;
                 }
-                
+                else
+                {
+                    MessageBox.Show("Такой язык уже имеется!", "Error");
+                }
+
+              
                 this.Close();
             }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
             }
-            
         }
-
-       
     }
 }

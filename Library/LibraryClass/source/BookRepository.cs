@@ -9,12 +9,12 @@ using LibraryClass.source;
 
 namespace LibraryClass
 {
-   public class BookRepository : IRepository<Book>
+    public class BookRepository : IRepository<Book>
     {
-       
+
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
 
-       
+
         public void Add(Book book)
         {
             _baseContext.Books.Add(book);
@@ -38,17 +38,18 @@ namespace LibraryClass
 
         public List<Book> GetRange(int from, int before)
         {
+           
             var langs = new LanguageRepository().GetAll();
             var editions = new EditionRepository().GetAll();
             var types = new TypeRepository().GetAll();
-      
-            var books =  _baseContext.Books.OrderBy(book => book.Id).Skip(() => from).Take(() => before).ToList();
+
+            var books = _baseContext.Books.OrderBy(book => book.Id).Skip(() => from).Take(() => before).ToList();
             foreach (var book in books)
             {
                 book.Languages = langs;
                 book.Types = types;
                 book.Editions = editions;
-               
+
                 book.Img.Source = ImageHelper.BytesToImage(book.Cover);
             }
 
@@ -57,9 +58,11 @@ namespace LibraryClass
 
         public Book Get(int id)
         {
-           
+
             return _baseContext.Books.FirstOrDefault(book => book.Id == id);
         }
+
+
 
         public Book Get(Func<Book, bool> func)
         {
@@ -82,9 +85,30 @@ namespace LibraryClass
             return books;
         }
 
+
+        public List<Book> GetAll(Func<Book, bool> func)
+        {
+            var langs = new LanguageRepository().GetAll();
+            var editions = new EditionRepository().GetAll();
+            var types = new TypeRepository().GetAll();
+            var books = _baseContext.Books.Where(func).ToList();
+            foreach (var book in books)
+            {
+                book.Languages = langs;
+                book.Types = types;
+                book.Editions = editions;
+
+                book.Img.Source = ImageHelper.BytesToImage(book.Cover);
+            }
+
+            return books;
+        }
+
+
+
         public List<Book> GetAllImg()
         {
-            
+
             var tmpBooks = _baseContext.Books.ToList();
             foreach (var t in tmpBooks)
             {
@@ -93,10 +117,10 @@ namespace LibraryClass
 
             return tmpBooks;
         }
-        
+
         public void Update(Book newBook)
         {
-            
+
             var changeable = Get(newBook.Id);
 
             if (changeable == null)
@@ -115,7 +139,7 @@ namespace LibraryClass
             changeable.Edition = newBook.Edition;
             changeable.Count = newBook.Count;
             changeable.Price = newBook.Price;
-          
+
 
             _baseContext.Entry(changeable).State = System.Data.Entity.EntityState.Modified;
             _baseContext.SaveChanges();
@@ -135,6 +159,17 @@ namespace LibraryClass
 
 
         }
-        
+
+
+
+        public bool Check(Func<Book, bool> func)
+        {
+            return this._baseContext.Books.All(func);
+        }
+
+        public int GetSize()
+        {
+            return this._baseContext.Books.Count();
+        }
     }
 }

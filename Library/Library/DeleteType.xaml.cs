@@ -18,18 +18,16 @@ using MahApps.Metro.Controls;
 namespace Library
 {
     /// <summary>
-    /// Логика взаимодействия для AddNewAuthor.xaml
+    /// Логика взаимодействия для DeleteType.xaml
     /// </summary>
-    public partial class AddNewAuthor : MetroWindow
+    public partial class DeleteType : MetroWindow
     {
-
-        private readonly AuthorRepository _authorRepository = new AuthorRepository();
+        private readonly TypeRepository _typeRepository = new TypeRepository();
+        private readonly BookRepository _bookRepository = new BookRepository();
         public bool Status = false;
-        public AddNewAuthor()
+        public DeleteType()
         {
-           
-          InitializeComponent();
-           
+            InitializeComponent();
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -38,28 +36,34 @@ namespace Library
             {
                 if (string.IsNullOrEmpty(this.TextBox.Text))
                 {
-                    MessageBox.Show("Вы ввели пустые данные!", "Error");
+                    MessageBox.Show("Данные пусты!", "Error");
                     return;
                 }
 
-                if (_authorRepository.Check(genre => genre.Name != this.TextBox.Text))
+                var tmp = this._typeRepository.Get(type => type.Name == this.TextBox.Text);
+
+                if (tmp is null)
                 {
-                    
-                    this._authorRepository.Add(new Author { Name = this.TextBox.Text });
-                    this.Status = true;
+                    MessageBox.Show("Тип не удалось найти!", "Error");
+                    return;
                 }
 
-                else
+                if (this._bookRepository.Check(book => book.Type.Name == this.TextBox.Text))
                 {
-                    MessageBox.Show("Такой автор уже имеется!", "Error");
+                    MessageBox.Show("Тип привязан к книгам, удаление невозможно", "Error");
+                    return;
                 }
 
+                this._typeRepository.Delete(tmp.Id);
+                this.Status = true;
                 this.Close();
+
             }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
             }
+          
         }
     }
 }

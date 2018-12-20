@@ -17,47 +17,47 @@ using MahApps.Metro.Controls;
 namespace Library
 {
     /// <summary>
-    /// Логика взаимодействия для AddNewGenre.xaml
+    /// Логика взаимодействия для AddNewEdition.xaml
     /// </summary>
-    public partial class AddNewGenre : MetroWindow
+    public partial class AddNewEdition : MetroWindow
     {
-        private readonly GenreRepository _genreRepository = new GenreRepository();
-
+        private  readonly EditionRepository _editionRepository = new EditionRepository();
         public bool Status = false;
-
-        public AddNewGenre()
+        public AddNewEdition()
         {
-          
-                InitializeComponent();
-               
+            InitializeComponent();
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
         {
+
             try
             {
                 if (string.IsNullOrEmpty(this.TextBox.Text))
                 {
-                    MessageBox.Show("Вы ввели пустые данные!", "Error");
+                    MessageBox.Show("Данные пусты!", "Error");
                     return;
                 }
 
-                if (_genreRepository.Check(genre => genre.Name != this.TextBox.Text))
+               
+                if (this._editionRepository.Get(edit => edit.Name == this.TextBox.Text) is null)
                 {
-                    var tmp = new Genre { Name = this.TextBox.Text };
-                    this._genreRepository.Add(tmp);
+                    this._editionRepository.Add(new Edition { Name = this.TextBox.Text });
                     this.Status = true;
                 }
-                
+
+                else
+                {
+                    MessageBox.Show("Такое издательство уже имеется!", "Error");
+                }
+
                 this.Close();
             }
             catch (Exception exception)
             {
-                MessageBox.Show(exception.Message, "Error");
+                MessageBox.Show(exception.Message, "Erorr");
             }
-            
+           
         }
-
-       
     }
 }

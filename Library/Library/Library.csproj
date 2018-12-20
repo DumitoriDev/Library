@@ -34,6 +34,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>Custom-Icon-Design-Pretty-Office-2-Library.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="ControlzEx, Version=3.0.2.4, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\ControlzEx.3.0.2.4\lib\net45\ControlzEx.dll</HintPath>
@@ -53,8 +56,12 @@
     <Reference Include="MahApps.Metro.SimpleChildWindow, Version=1.5.0.16, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\MahApps.Metro.SimpleChildWindow.1.5.0\lib\net45\MahApps.Metro.SimpleChildWindow.dll</HintPath>
     </Reference>
+    <Reference Include="MasaSam.Controls">
+      <HintPath>..\packages\MasaSam.Controls.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
@@ -95,7 +102,43 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="AddNewEdition.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="AddNewGenre.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddNewLanguage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="AddNewType.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="ConnStrAsk.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="DeleteAuthor.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeleteEdition.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeleteGenre.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeleteLanguage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="DeleteType.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -115,13 +158,41 @@
     <Compile Include="AddNewAuthor.xaml.cs">
       <DependentUpon>AddNewAuthor.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AddNewEdition.xaml.cs">
+      <DependentUpon>AddNewEdition.xaml</DependentUpon>
+    </Compile>
     <Compile Include="AddNewGenre.xaml.cs">
       <DependentUpon>AddNewGenre.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddNewLanguage.xaml.cs">
+      <DependentUpon>AddNewLanguage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AddNewType.xaml.cs">
+      <DependentUpon>AddNewType.xaml</DependentUpon>
     </Compile>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="ConnStrAsk.xaml.cs">
+      <DependentUpon>ConnStrAsk.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeleteAuthor.xaml.cs">
+      <DependentUpon>DeleteAuthor.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeleteEdition.xaml.cs">
+      <DependentUpon>DeleteEdition.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeleteGenre.xaml.cs">
+      <DependentUpon>DeleteGenre.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeleteLanguage.xaml.cs">
+      <DependentUpon>DeleteLanguage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="DeleteType.xaml.cs">
+      <DependentUpon>DeleteType.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="LoginData.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
@@ -174,6 +245,9 @@
       <Project>{1dec59e3-4bd1-408d-9d85-23395b64eda1}</Project>
       <Name>LibraryClass</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Custom-Icon-Design-Pretty-Office-2-Library.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

@@ -6,14 +6,14 @@
                  xmlns:local="clr-namespace:Library"
                  xmlns:mah="http://metro.mahapps.com/winfx/xaml/controls"
                  mc:Ignorable="d"
-                 Title="AddAuthor" Height="81.524" Width="391.429">
+                 Title="Добавление жанра" Height="81.524" Width="391.429">
     <Grid>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="99*"/>
             <ColumnDefinition Width="284*"/>
         </Grid.ColumnDefinitions>
         <Button Content="OK" Click="ButtonBase_OnClick"></Button>
-        <TextBox Name="TextBox" Grid.Column="1" Margin="10,0">
+        <TextBox Name="TextBox" Grid.Column="1" Margin="10,0,0,0" mah:TextBoxHelper.Watermark="Введите жанр">
             
         </TextBox>
     </Grid>

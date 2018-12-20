@@ -26,18 +26,12 @@ namespace Library
 
         public AddAuthor(ICollection<Author> authors)
         {
-            try
-            {
-               
-                InitializeComponent();
-                this._authors = authors;
-                ComboBox.ItemsSource = new AuthorRepository().GetAll();
-            }
-            catch (Exception e)
-            {
-                MessageBox.Show(e.Message, "Error");
-            }
-           
+
+            InitializeComponent();
+            this._authors = authors;
+            ComboBox.ItemsSource = new AuthorRepository().GetAll();
+
+
         }
 
         private void Selector_OnSelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -45,7 +39,7 @@ namespace Library
             try
             {
                 var res = (sender as ComboBox)?.SelectedItem;
-                if (_authors.All(author => res != null && author.Id != ((Author) res).Id))
+                if (_authors.All(author => res != null && author.Id != ((Author)res).Id))
                 {
                     _authors.Add((Author)res);
                 }
@@ -55,7 +49,7 @@ namespace Library
             {
                 MessageBox.Show(exception.Message, "Error");
             }
-           
+
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)

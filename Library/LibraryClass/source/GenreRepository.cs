@@ -11,6 +11,11 @@ namespace LibraryClass
 
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
 
+        public int GetSize()
+        {
+            return this._baseContext.Genres.Count();
+        }
+
         public void Add(Genre genre)
         {
             _baseContext.Genres.Add(genre);

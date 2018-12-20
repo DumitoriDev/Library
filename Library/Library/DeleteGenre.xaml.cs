@@ -17,19 +17,16 @@ using MahApps.Metro.Controls;
 namespace Library
 {
     /// <summary>
-    /// Логика взаимодействия для AddNewGenre.xaml
+    /// Логика взаимодействия для DeleteGenre.xaml
     /// </summary>
-    public partial class AddNewGenre : MetroWindow
+    public partial class DeleteGenre : MetroWindow
     {
         private readonly GenreRepository _genreRepository = new GenreRepository();
-
+        private readonly BookRepository _bookRepository = new BookRepository();
         public bool Status = false;
-
-        public AddNewGenre()
+        public DeleteGenre()
         {
-          
-                InitializeComponent();
-               
+            InitializeComponent();
         }
 
         private void ButtonBase_OnClick(object sender, RoutedEventArgs e)
@@ -38,26 +35,33 @@ namespace Library
             {
                 if (string.IsNullOrEmpty(this.TextBox.Text))
                 {
-                    MessageBox.Show("Вы ввели пустые данные!", "Error");
+                    MessageBox.Show("Данные пусты!", "Error");
                     return;
                 }
 
-                if (_genreRepository.Check(genre => genre.Name != this.TextBox.Text))
+                var tmp = this._genreRepository.Get(genre => genre.Name == this.TextBox.Text);
+              
+                   
+                if (tmp is null)
                 {
-                    var tmp = new Genre { Name = this.TextBox.Text };
-                    this._genreRepository.Add(tmp);
-                    this.Status = true;
+                    MessageBox.Show("Жанра нет!", "Error");
+                    return;
                 }
-                
+
+                if (this._bookRepository.Check(book => book.Genre.All(genre => genre.Name == this.TextBox.Text)))
+                {
+                    MessageBox.Show("Жанр привязан к книгам, удаление невозможно" , "Error");
+                    return;
+                }
+                this._genreRepository.Delete(tmp.Id);
+                this.Status = true;
                 this.Close();
             }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
             }
-            
+          
         }
-
-       
     }
 }

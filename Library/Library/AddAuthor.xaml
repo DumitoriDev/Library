@@ -13,7 +13,7 @@
             <ColumnDefinition Width="284*"/>
         </Grid.ColumnDefinitions>
         <Button Content="OK" Click="Button_Click"></Button>
-        <ComboBox Name="ComboBox" Grid.Column="1" ItemsSource="{Binding Authors}" DisplayMemberPath="Name" SelectedItem="{Binding Author}" SelectionChanged="Selector_OnSelectionChanged" Margin="10,0">
+        <ComboBox Name="ComboBox" Grid.Column="1" ItemsSource="{Binding Authors}" DisplayMemberPath="Name" SelectedItem="{Binding Author}" SelectionChanged="Selector_OnSelectionChanged" Margin="10,0,0,0" IsEditable="True">
 
         </ComboBox>
     </Grid>
