@@ -15,6 +15,7 @@ using System.Windows.Shapes;
 using System.Data.SqlClient;
 using System.IO;
 using System.Threading;
+using System.Windows.Threading;
 using System.Xml.Serialization;
 using LibraryClass;
 using MahApps.Metro.Controls;
@@ -40,8 +41,7 @@ namespace Library
             InitializeComponent();
             this.Image.Source = new BitmapImage(new Uri(System.IO.Path.GetFullPath("img/Welcome.png")));
             this.LoadData();
-
-
+            
         }
 
         private void LoadData()
@@ -86,7 +86,7 @@ namespace Library
 
                     }
 
-                    _connStr = CollectConnStr(ServerNameTextBox.Text, LoginTextBox.Text, DBPasswordPwdBox.Text, DBNameTextBox.Text);
+                    _connStr = CollectConnStr(ServerNameTextBox.Text, LoginTextBox.Text, DBPasswordPwdBox.Password, DBNameTextBox.Text);
 
 
                 }
@@ -100,8 +100,10 @@ namespace Library
                 {
                     await this.ShowMessageAsync("Информация", "Успешно!");
                     DataBaseContext.connStr = this._connStr;
+                   
                     var mainWindow = new MainWindow();
                     mainWindow.Show();
+                    
                     this.Close();
                 }
             }

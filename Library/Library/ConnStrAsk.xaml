@@ -36,7 +36,7 @@
 
         <TextBox x:Name="DBNameTextBox" mah:TextBoxHelper.Watermark="Имя базы данных.." HorizontalAlignment="Left" Height="30" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="347" FontSize="15" FontFamily="Segoe UI" Grid.Row="4" Canvas.Left="113" Canvas.Top="298" FontWeight="Medium"/>
 
-        <TextBox x:Name="DBPasswordPwdBox" HorizontalAlignment="Left" FontSize="15" VerticalAlignment="Top" Height="26" Width="347" mah:TextBoxHelper.Watermark="Пароль.."  Grid.Row="3" Canvas.Left="113" Canvas.Top="267" FontWeight="Medium"/>
+        <PasswordBox x:Name="DBPasswordPwdBox" HorizontalAlignment="Left" FontSize="15" VerticalAlignment="Top" Height="26" Width="347" mah:TextBoxHelper.Watermark="Пароль.."  Grid.Row="3" Canvas.Left="113" Canvas.Top="267" FontWeight="Medium" />
 
         <mah:ProgressRing Name="ProgressRing" IsActive="False" Height="199" Width="306" Canvas.Left="126" Canvas.Top="143" />
     </Canvas>

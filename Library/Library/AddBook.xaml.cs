@@ -26,6 +26,7 @@ namespace Library
         private readonly BookRepository _bookRepository = new BookRepository();
         private readonly BookAndReaderRepository _readerRepository = new BookAndReaderRepository();
         private readonly Reader _reader;
+        public bool Status = false;
         public AddBook(Reader tmpreader)
         {
             InitializeComponent();
@@ -47,7 +48,7 @@ namespace Library
 
 
                 var bookTmp = _bookRepository.Get(book =>
-                    book.Author.Any(author => author.Name == ComboBoxAuthor.Text));
+                    book.Author.Any(author => author.Name == ComboBoxAuthor.Text) && book.Name == ComboBoxName.Text);
 
                 if (bookTmp is null)
                 {
@@ -60,10 +61,7 @@ namespace Library
                     bookTmp.Count--;
                     this._bookRepository.Update(bookTmp);
 
-                    var readerTmp =
-                      _readerRepository.Get(reader =>
-                          reader.Book.Equals(bookTmp) && reader.DateEnd.EndTime ==
-                          DateTime.Now.AddDays(Convert.ToInt16(this.Days.Value)) && reader.DateEnd.StartTime == DateTime.Now) ?? new BookAndReader
+                    var readerTmp = new BookAndDates
                           {
                               Book = bookTmp,
                               DateEnd = new UntilDate { EndTime = DateTime.Now.AddDays(Convert.ToInt16(this.Days.Value)), StartTime = DateTime.Now }
@@ -72,7 +70,8 @@ namespace Library
                     this._readerRepository.Add(readerTmp);
                     this._reader.BookAndReaders.Add(readerTmp);
 
-                    
+                    this.Status = true;
+
                 }
 
                 else

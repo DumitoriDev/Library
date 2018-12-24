@@ -60,7 +60,7 @@
     <Compile Include="source\Author.cs" />
     <Compile Include="source\AuthorRepository.cs" />
     <Compile Include="source\Book.cs" />
-    <Compile Include="source\BookAndReader.cs" />
+    <Compile Include="source\BookAndDates.cs" />
     <Compile Include="source\BookAndReaderRepository.cs" />
     <Compile Include="source\BookRepository.cs" />
     <Compile Include="source\DatabaseContext.cs" />

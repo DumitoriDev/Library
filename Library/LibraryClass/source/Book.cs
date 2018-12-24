@@ -48,11 +48,11 @@ namespace LibraryClass
 
         public int Rate { get; set; }
 
-        
 
 
 
-        [NotMapped] public Image Img { get; set; } = new Image();
+
+        [NotMapped] public Image Img { get; set; } 
 
         [NotMapped] public List<Type> Types { get; set; }
 

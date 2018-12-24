@@ -1,29 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.ComponentModel;
-using System.Data;
-using System.Data.SqlClient;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using System.Reflection;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
 using System.Windows.Forms;
-using System.Windows.Forms.VisualStyles;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 using System.Windows.Threading;
-using Library;
 using LibraryClass;
 using LibraryClass.source;
 using MahApps.Metro.Controls;
@@ -44,94 +29,136 @@ namespace Library
 
     public partial class MainWindow : MetroWindow
     {
-        private readonly BookRepository _bookHelper = new BookRepository();
-        private readonly ReaderRepository _readerRepository = new ReaderRepository();
-        private readonly BookAndReaderRepository _bookAndReaderRepository = new BookAndReaderRepository();
+        private  BookRepository _bookHelper = new BookRepository();
+        private  ReaderRepository _readerRepository = new ReaderRepository();
+        private  BookAndReaderRepository _bookAndReaderRepository = new BookAndReaderRepository();
 
-        public  string[] Choose { get; set; } = {"Одиночный поиск", "Множественный"};
+        public string[] Choose { get; set; } = { "Одиночный поиск", "Множественный" };
 
-        private int _fromBook = 0;
-        private int _beforeBook = 10;
+        private int _fromBook;
+        private const int BeforeBook = 10;
 
 
         private int _fromReader = 0;
-        private int _beforeReader = 10;
+        private const int BeforeReader = 10;
 
 
         public MainWindow()
         {
             InitializeComponent();
+
             this.DataContext = this;
-             
+            this.Update();
+            
         }
 
-        
-        #region Update
-        public async void Update()
-        {
 
+        #region Update
+
+        public async void Update() //Обновление всего
+        {
+            
             await Task.Factory.StartNew(() =>
             {
                 try
-                {
+                { 
                     this.Dispatcher.Invoke(() =>
                     {
+                        this.ProgressRing.IsActive = true;
+                        this.Grid.IsEnabled = false;
+                    });
 
-                        this.UpdateBooks();
-                        this.UpdateReaders();
-                        this.UpdateDebtor();
+                    DataBaseContext.Close();
+                    DataBaseContext.Connect();
+
+                    this._bookHelper = new BookRepository();
+                    this._readerRepository = new ReaderRepository();
+                    this._bookAndReaderRepository = new BookAndReaderRepository();
+                    this.UpdateBooks(); 
+
+                    this.UpdateReaders();
+                    this.UpdateDebtor();
+
+                    this.Dispatcher.BeginInvoke(new Action(()=>
+                    {
                         this.UpdateInfoAll();
-
                         this.ShowMessageAsync("Информация", "Успешная загрузка");
-                    }, DispatcherPriority.Normal);
+
+                    }));
+                    this.Dispatcher.Invoke(() =>
+                    {
+                        this.ProgressRing.IsActive = false;
+                        this.Grid.IsEnabled = true;
+                    });
 
                 }
-
                 catch (Exception e)
                 {
-                    MessageBox.Show(e.Message, "Error");
+                    Console.WriteLine(e);
                     
                 }
-
-            }, TaskCreationOptions.LongRunning);
-
-        }
+            },TaskCreationOptions.LongRunning);
         
+        }
+
         private void UpdateBooks()
         {
+            var list =  this._bookHelper.GetRange(this._fromBook, BeforeBook);
+           
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                foreach (var book in list)
+                {
+                    book.Img = new Image {Source = ImageHelper.BytesToImage(book.Cover)};
+                }
+                this.GridBooks.ItemsSource = null;
+                this.GridBooks.ItemsSource = list;
 
-            this.GridBooks.ItemsSource = null;
-            this.GridBooks.ItemsSource = _bookHelper.GetRange(_fromBook, _beforeBook);
-
-
+                
+            }), DispatcherPriority.Normal);
         }
 
         private void UpdateReaders()
         {
-            this.GridReaders.ItemsSource = null;
-            this.GridReaders.ItemsSource = _readerRepository.GetRange(this._fromReader, this._beforeReader);
+            var list = _readerRepository.GetRange(this._fromReader, BeforeReader);
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+               this.GridReaders.ItemsSource = null;
+               this.GridReaders.ItemsSource = list;
+                
+            }), DispatcherPriority.Normal);
         }
 
         private void UpdateDebtor()
         {
-            this.GridInfoDebtor.ItemsSource = null;
             var readers = _readerRepository.GetAll(reader =>
                 reader.BookAndReaders.Any(andReader => andReader.DateEnd.EndTime < DateTime.Now));
-            if (readers.Count < 1)
-            {
-                this.GridReadersDebtor.ItemsSource = readers;
-                this.GridReadersDebtor.IsEnabled = false;
-                this.TextBlockDebtor.Visibility = Visibility.Visible;
-            }
-            else
-            {
-                this.GridReadersDebtor.ItemsSource = readers;
-                this.GridReadersDebtor.IsEnabled = true;
-                this.TextBlockDebtor.Visibility = Visibility.Collapsed;
-            }
 
+            this.Dispatcher.BeginInvoke(new Action(() =>
+            {
+                this.GridInfoDebtor.ItemsSource = null;
+
+                if (readers.Count < 1)
+                {
+                    this.GridReadersDebtor.ItemsSource = readers;
+                    this.GridReadersDebtor.IsEnabled = false;
+                    this.TextBlockDebtor.Visibility = Visibility.Visible;
+                }
+                else
+                {
+                    foreach (var reader in readers)
+                    {
+                        reader.BookAndReaders = reader.BookAndReaders.Where(dates => dates.DateEnd.EndTime < DateTime.Now).ToList();
+                    }
+
+                    this.GridReadersDebtor.ItemsSource = readers;
+                    this.GridReadersDebtor.IsEnabled = true;
+                    this.TextBlockDebtor.Visibility = Visibility.Collapsed;
+                }
+            }));
+            
         }
-        
+
         private void UpdateInfoAll()
         {
 
@@ -148,6 +175,7 @@ namespace Library
         #endregion
 
         #region Save
+
         private bool SaveBook()
         {
 
@@ -186,30 +214,34 @@ namespace Library
             return true;
 
         }
+
         #endregion
-        
+
         #region Click
 
         private void MenuItem_OnClick_Save_All(object sender, RoutedEventArgs e)
         {
-
-
-            this.ProgressRing.IsActive = true;
-
+            
             Task.Factory.StartNew(delegate
             {
                 try
                 {
+                    this.Dispatcher.Invoke(() => { this.ProgressRing.IsActive = true; });
                     if (this.SaveBook() && this.SaveReader())
                     {
-                        this.Dispatcher.Invoke(() => { this.ShowMessageAsync("Информация", "Сохранение прошло успешно!"); });
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.ShowMessageAsync("Информация", "Сохранение прошло успешно!");
+                        });
                     }
+                    this.Dispatcher.Invoke(() => { this.ProgressRing.IsActive = false; });
                 }
                 catch (Exception exception)
                 {
                     MessageBox.Show(exception.Message, "Error");
                 }
-                this.Dispatcher.Invoke(() => { this.ProgressRing.IsActive = false; });
+
+             
 
             });
 
@@ -218,24 +250,29 @@ namespace Library
 
         private void MenuItem_OnClick_Save(object sender, RoutedEventArgs e)
         {
-            this.ProgressRing.IsActive = true;
-
+           
             Task.Factory.StartNew(delegate
             {
 
                 try
                 {
+                    this.Dispatcher.Invoke(() => { this.ProgressRing.IsActive = true; });
                     if (this.SaveBook())
                     {
-                        this.Dispatcher.Invoke(() => { this.ShowMessageAsync("Информация", "Сохранение прошло успешно!"); });
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.ShowMessageAsync("Информация", "Сохранение прошло успешно!");
+                        });
 
                     }
+                    this.Dispatcher.Invoke(() => { this.ProgressRing.IsActive = false; });
                 }
                 catch (Exception exception)
                 {
                     MessageBox.Show(exception.Message, "Error");
                 }
-                this.Dispatcher.Invoke(() => { this.ProgressRing.IsActive = false; });
+
+                
 
             });
 
@@ -244,17 +281,27 @@ namespace Library
 
         private async void MenuItem_OnClick_Save_Reader(object sender, RoutedEventArgs e)
         {
-            try
+            await Task.Factory.StartNew(() =>
             {
-                if (this.SaveReader())
+                try
                 {
-                    await this.ShowMessageAsync("Информация", "Сохранение прошло успешно!");
+                    this.Dispatcher.Invoke(() => { this.ProgressRing.IsActive = true; });
+                    if (this.SaveReader())
+                    {
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.ShowMessageAsync("Информация", "Сохранение прошло успешно!");
+                        });
+                    }
+                    this.Dispatcher.Invoke(() => { this.ProgressRing.IsActive = false; });
                 }
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message, "Error");
-            }
+                catch (Exception exception)
+                {
+                    MessageBox.Show(exception.Message, "Error");
+                    this.Dispatcher.Invoke(() => { this.ProgressRing.IsActive = false; });
+                }
+            });
+
 
 
         }
@@ -313,7 +360,7 @@ namespace Library
             this.Close();
 
         }
-        
+
         private void UpdateInfo_Click(object sender, RoutedEventArgs e)
         {
             try
@@ -349,15 +396,25 @@ namespace Library
 
                 var res = this.GridBooks.ItemsSource as List<Book>;
 
-                if (this._bookHelper.Get(((Book)GridBooks.SelectedItem).Id) is null)
+                var book = this._bookHelper.Get(((Book) GridBooks.SelectedItem).Id);
+                if (book is null)
                 {
                     res?.Remove(((Book)GridBooks.SelectedItem));
                 }
-
+                
                 else
                 {
-                    this._bookHelper.Delete(((Book)GridBooks.SelectedItem).Id);
-                    res = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                    if (this._readerRepository.Check(reader => reader.BookAndReaders.Any(dates => dates.Book.Equals(book))))
+                    {
+                        MessageBox.Show("Эта книга привязана к читателю, удаление невозможно");
+                        
+                    }
+                    else
+                    {
+                        this._bookHelper.Delete(((Book)GridBooks.SelectedItem).Id);
+                        res = this._bookHelper.GetRange(this._fromBook, BeforeBook);
+                    }
+                  
                 }
 
                 this.GridBooks.ItemsSource = null;
@@ -367,7 +424,7 @@ namespace Library
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
-
+                this.GridBooks.IsEnabled = true;
             }
 
         }
@@ -402,7 +459,7 @@ namespace Library
                 else
                 {
                     this._readerRepository.Delete(((Reader)this.GridReaders.SelectedItem).Id);
-                    res = this._readerRepository.GetRange(this._fromReader, this._beforeReader);
+                    res = this._readerRepository.GetRange(this._fromReader, BeforeReader);
                 }
 
                 this.GridReaders.ItemsSource = null;
@@ -412,6 +469,7 @@ namespace Library
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
+                this.GridReaders.IsEnabled = true;
 
             }
 
@@ -452,6 +510,7 @@ namespace Library
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
+                this.GridBooks.IsEnabled = false;
             }
 
         }
@@ -521,7 +580,7 @@ namespace Library
 
         }
 
-        private void MenuItem_OnClick_Add_Genre(object sender, RoutedEventArgs e)
+        private async void MenuItem_OnClick_Add_Genre(object sender, RoutedEventArgs e)
         {
             try
             {
@@ -529,7 +588,10 @@ namespace Library
                 var tmp = new AddGenre((GridBooks.SelectedItem as Book)?.Genre);
                 tmp.ShowDialog();
                 this.GridGenre.ItemsSource = (GridBooks.SelectedItem as Book)?.Genre.ToList();
-
+                if (tmp.Status)
+                {
+                    await this.ShowMessageAsync("Информация", "Успешно!");
+                }
             }
             catch (Exception exception)
             {
@@ -608,7 +670,7 @@ namespace Library
                 tmp.ShowDialog();
 
                 this.GridBooks.ItemsSource = null;
-                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, BeforeBook);
                 if (tmp.Status)
                 {
                     await this.ShowMessageAsync("Информация", "Успешно!");
@@ -652,7 +714,7 @@ namespace Library
                 tmp.ShowDialog();
 
                 this.GridBooks.ItemsSource = null;
-                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, BeforeBook);
                 if (tmp.Status)
                 {
                     await this.ShowMessageAsync("Информация", "Успешно!");
@@ -674,7 +736,7 @@ namespace Library
                 tmp.ShowDialog();
 
                 this.GridBooks.ItemsSource = null;
-                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, BeforeBook);
                 if (tmp.Status)
                 {
                     await this.ShowMessageAsync("Информация", "Успешно!");
@@ -697,7 +759,7 @@ namespace Library
                 tmp.ShowDialog();
 
                 this.GridBooks.ItemsSource = null;
-                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, BeforeBook);
                 if (tmp.Status)
                 {
                     await this.ShowMessageAsync("Информация", "Успешно!");
@@ -739,7 +801,7 @@ namespace Library
                 var tmp = new AddNewType();
                 tmp.ShowDialog();
                 this.GridBooks.ItemsSource = null;
-                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, BeforeBook);
                 if (tmp.Status)
                 {
                     await this.ShowMessageAsync("Информация", "Успешно!");
@@ -761,7 +823,7 @@ namespace Library
                 var tmp = new AddNewEdition();
                 tmp.ShowDialog();
                 this.GridBooks.ItemsSource = null;
-                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, BeforeBook);
                 if (tmp.Status)
                 {
                     await this.ShowMessageAsync("Информация", "Успешно!");
@@ -809,6 +871,7 @@ namespace Library
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
+                this.GridReaders.IsEnabled = true;
             }
 
         }
@@ -858,9 +921,11 @@ namespace Library
                     this.GridInfoBooks.ItemsSource = null;
                     this.GridInfoBooks.ItemsSource = tmpList.First().BookAndReaders;
                     this.GridBooks.ItemsSource = null;
-                    this.GridBooks.ItemsSource = _bookHelper.GetRange(this._fromBook, this._beforeBook);
-
-                    await this.ShowMessageAsync("Информация", "Успешно!");
+                    this.GridBooks.ItemsSource = _bookHelper.GetRange(this._fromBook, BeforeBook);
+                    if (tmp.Status)
+                    {
+                        await this.ShowMessageAsync("Информация", "Успешно!");
+                    }
 
                 }
                 catch (Exception exception)
@@ -884,7 +949,7 @@ namespace Library
 
                 try
                 {
-                    var reader = this.GridInfoBooks.SelectedItem as BookAndReader;
+                    var reader = this.GridInfoBooks.SelectedItem as BookAndDates;
                     if (reader is null)
                     {
                         return;
@@ -899,7 +964,7 @@ namespace Library
 
 
                     this.GridBooks.ItemsSource = null;
-                    this.GridBooks.ItemsSource = _bookHelper.GetRange(this._fromBook, this._beforeBook);
+                    this.GridBooks.ItemsSource = _bookHelper.GetRange(this._fromBook, BeforeBook);
 
                     if ((this.GridReaders.SelectedItem as Reader) == null) return;
 
@@ -930,7 +995,7 @@ namespace Library
 
                 try
                 {
-                    if (!(this.GridInfoDebtor.SelectedItem is BookAndReader reader))
+                    if (!(this.GridInfoDebtor.SelectedItem is BookAndDates reader))
                     {
                         return;
                     }
@@ -965,9 +1030,11 @@ namespace Library
             }
 
         }
+
         #endregion
 
         #region Flyout
+
         private void FlyoutInfo_OnClosingFinished_Reader(object sender, RoutedEventArgs e)
         {
             try
@@ -977,7 +1044,7 @@ namespace Library
                     ((this.GridInfoLogin.ItemsSource as List<Reader>) ?? throw new InvalidOperationException()).First()
                     .Password;
                 ((Reader)this.GridReaders.SelectedItem).BookAndReaders =
-                    (((ICollection<BookAndReader>)this.GridInfoBooks.ItemsSource) ??
+                    (((ICollection<BookAndDates>)this.GridInfoBooks.ItemsSource) ??
                      throw new InvalidOperationException());
 
                 this.GridReaders.IsEnabled = true;
@@ -986,6 +1053,7 @@ namespace Library
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
+                this.GridReaders.IsEnabled = true;
             }
 
 
@@ -1000,7 +1068,7 @@ namespace Library
                     ((this.GridInfoLoginDebtor.ItemsSource as List<Reader>) ?? throw new InvalidOperationException())
                     .First().Password;
                 ((Reader)this.GridReadersDebtor.SelectedItem).BookAndReaders =
-                    (((ICollection<BookAndReader>)this.GridInfoDebtor.ItemsSource) ??
+                    (((ICollection<BookAndDates>)this.GridInfoDebtor.ItemsSource) ??
                      throw new InvalidOperationException());
 
                 this.UpdateDebtor();
@@ -1011,6 +1079,7 @@ namespace Library
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
+                this.GridReadersDebtor.IsEnabled = true;
             }
 
 
@@ -1031,19 +1100,22 @@ namespace Library
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
+                this.GridBooks.IsEnabled = true;
             }
 
 
         }
+
         #endregion
 
         #region Change
+
         private void GridReaders_OnAddingNewItem(object sender, AddingNewItemEventArgs e)
         {
             try
             {
                 e.NewItem = new Reader();
-                ((Reader)e.NewItem).BookAndReaders = new List<BookAndReader>();
+                ((Reader)e.NewItem).BookAndReaders = new List<BookAndDates>();
             }
             catch (Exception exception)
             {
@@ -1069,33 +1141,8 @@ namespace Library
             }
 
         }
-        
-        private void Selector_OnSelectionChanged_Book(object sender, SelectionChangedEventArgs e)
-        {
-            try
-            {
-                if ((sender as ComboBox) is null) return;
 
-                switch (((ComboBox)sender).SelectedIndex)
-                {
-                    case 0: //одна книга
-                        this.ComboBoxBooks.ItemsSource = new string[] { "Искать по названию" };
-                        break;
-                    case 1: //много книг
-                        this.ComboBoxBooks.ItemsSource = new[] { "Искать по автору", "Искать по жанру", "Искать по типу" };
-                        break;
-                    default:
-                        return;
-                }
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message, "error");
-            }
-
-
-
-        }
+       
 
         private void GridBooks_OnCurrentCellChanged(object sender, EventArgs e)
         {
@@ -1154,11 +1201,48 @@ namespace Library
 
         private void MainWindow_OnLoaded(object sender, RoutedEventArgs e)
         {
-            this.Update();
+
+            //Task.Factory.StartNew(() => { this.BeginInvoke(() => { this.UpdateBooks(); }); });
+            //this.Update();
+
+
+
+
+
         }
+
         #endregion
 
         #region Search
+
+        private void Selector_OnSelectionChanged_Book(object sender, SelectionChangedEventArgs e)
+        {
+            try
+            {
+                if ((sender as ComboBox) is null) return;
+
+                switch (((ComboBox)sender).SelectedIndex)
+                {
+                    case 0: //одна книга
+                        this.ComboBoxBooks.ItemsSource = new string[] { "Искать по названию" };
+                        break;
+                    case 1: //много книг
+                        this.ComboBoxBooks.ItemsSource = new[]
+                            {"Искать по автору", "Искать по жанру", "Искать по типу","Искать по названию(для типов)"};
+                        break;
+                    default:
+                        return;
+                }
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "error");
+            }
+
+
+
+        }
+
         private void StartSearchBook_OnClick(object sender, RoutedEventArgs e)
         {
             try
@@ -1241,6 +1325,21 @@ namespace Library
                                 }
 
                                 break;
+
+                            case 3: //Искать по названию
+                                books = this._bookHelper.GetAll(book => book.Name == this.TextBoxSearchBook.Text);
+                                if (books.Count < 1)
+                                {
+                                    MessageBox.Show("Поиск не дал результатов!", "Error");
+                                    return;
+                                }
+                                else
+                                {
+                                    this.GridBooks.ItemsSource = null;
+                                    this.GridBooks.ItemsSource = books;
+                                }
+
+                                break;
                             default: return;
 
                         }
@@ -1303,7 +1402,7 @@ namespace Library
 
         private void SettingSearchReaders()
         {
-
+            this.StartSearchReader.IsEnabled = !this.StartSearchReader.IsEnabled;
             this.GridReaders.CanUserAddRows = !this.GridReaders.CanUserAddRows;
             this.GridReaders.CanUserDeleteRows = !this.GridReaders.CanUserDeleteRows;
             this.ArrowLeftReader.IsEnabled = !this.ArrowLeftReader.IsEnabled;
@@ -1311,28 +1410,30 @@ namespace Library
             this.ArrowLeftEndReader.IsEnabled = !this.ArrowLeftEndReader.IsEnabled;
             this.ArrowRightEndReader.IsEnabled = !this.ArrowRightEndReader.IsEnabled;
             this.StopSearchReaders.IsEnabled = !this.StopSearchReaders.IsEnabled;
+            this.Menu.IsEnabled = !this.Menu.IsEnabled;
         }
 
         private void SettingSearchBooks()
         {
+            this.StartSearchBook.IsEnabled = !this.StartSearchBook.IsEnabled;
             this.GridBooks.CanUserAddRows = !this.GridBooks.CanUserAddRows;
             this.GridBooks.CanUserDeleteRows = !this.GridBooks.CanUserDeleteRows;
             this.ArrowLeft.IsEnabled = !this.ArrowLeft.IsEnabled;
             this.ArrowRight.IsEnabled = !this.ArrowRight.IsEnabled;
             this.ArrowLeftEnd.IsEnabled = !this.ArrowLeftEnd.IsEnabled;
             this.ArrowRightEnd.IsEnabled = !this.ArrowRightEnd.IsEnabled;
-
             this.StopSearchBook.IsEnabled = !this.StopSearchBook.IsEnabled;
+            this.Menu.IsEnabled = !this.Menu.IsEnabled;
         }
 
         private void StartSearchReader_Click(object sender, RoutedEventArgs e)
         {
             try
             {
-                if (string.IsNullOrEmpty(this.TextBoxSearchReader.Text) || this.ComboBoxSearchReaderTwo.SelectedIndex == -1 ||
+                if (string.IsNullOrEmpty(this.TextBoxSearchReader.Text) ||
+                    this.ComboBoxSearchReaderTwo.SelectedIndex == -1 ||
                     this.ComboBoxSearchReaderOne.SelectedIndex == -1)
                     return;
-                List<Reader> readers;
                 switch (this.ComboBoxSearchReaderOne.SelectedIndex)
                 {
                     case 0:
@@ -1381,6 +1482,7 @@ namespace Library
 
                         break;
                     case 1:
+                        List<Reader> readers;
                         switch (this.ComboBoxSearchReaderTwo.SelectedIndex)
                         {
                             case 0: //Искать по книге
@@ -1401,8 +1503,10 @@ namespace Library
                             case 1: //Искать по времени сдачи
                                 readers = this._readerRepository.GetAll(reader =>
                                     reader.BookAndReaders.Any(book =>
-                                        book.DateEnd.EndTime.ToString(CultureInfo.InvariantCulture) ==
+                                        book.DateEnd.EndTime.ToShortDateString() ==
                                         this.TextBoxSearchReader.Text));
+
+                                MessageBox.Show(DateTime.Now.ToShortDateString());
                                 if (readers.Count < 1)
                                 {
                                     MessageBox.Show("Поиск не дал результатов!", "Error");
@@ -1440,8 +1544,7 @@ namespace Library
             try
             {
                 this.UpdateReaders();
-
-                SettingSearchReaders();
+                this.SettingSearchReaders();
             }
 
             catch (Exception exception)
@@ -1451,132 +1554,287 @@ namespace Library
 
 
         }
+
         #endregion
-        
-        #region Button
+
+        #region ButtonArrow
+
         private async void ArrowRight_Click(object sender, RoutedEventArgs e)
         {
-
-            this.ProgressRing.IsActive = true;
-            this.Grid.IsEnabled = false;
-
-            await Task.Factory.StartNew(delegate
+            try
             {
-                try
+                this.ProgressRing.IsActive = true;
+                this.Grid.IsEnabled = false;
+
+                await Task.Factory.StartNew(delegate
                 {
-
-                    if (!this.SaveBook())
-                    {
-                        MessageBox.Show("Невозможно сохранить текущую страницу!");
-                        return;
-                    }
-
-                    _fromBook += 10;
-                    _beforeBook += 10;
-
-                    this.Dispatcher.Invoke(() =>
+                    try
                     {
 
-                        var books = _bookHelper.GetRange(this._fromBook, this._beforeBook);
-                        if (books.Count == 0)
+                        if (!this.SaveBook())
                         {
-                            MessageBox.Show("Последняя страница!", "Info");
-                            _fromBook -= 10;
-                            _beforeBook -= 10;
+                            MessageBox.Show("Невозможно сохранить текущую страницу!");
                             return;
                         }
 
-                        this.GridBooks.ItemsSource = null;
-                        this.GridBooks.ItemsSource = books;
-                        this.NumPageBook.Count = $"{int.Parse(this.NumPageBook.Count) + 1}";
+                        this._fromBook += 10;
+                     
+                        this.Dispatcher.Invoke(() =>
+                        {
 
-                    });
+                            var books = _bookHelper.GetRange(this._fromBook, BeforeBook);
+                            if (books.Count == 0)
+                            {
+                                MessageBox.Show("Последняя страница!", "Info");
+                                this._fromBook -= 10;
+                                 return;
+                            }
+
+                            foreach (var book in books)
+                            {
+                                book.Img = new Image{Source = ImageHelper.BytesToImage(book.Cover)};
+                            }
+                            this.GridBooks.ItemsSource = null;
+                            this.GridBooks.ItemsSource = books;
+                            this.NumPageBook.Count = $"{int.Parse(this.NumPageBook.Count) + 1}";
+
+                        });
 
 
-                }
-                catch (Exception exception)
-                {
-                    MessageBox.Show(exception.Message, "Error");
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message, "Error");
 
-                }
-            });
+                    }
+                });
+                this.ProgressRing.IsActive = false;
+                this.Grid.IsEnabled = true;
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Error");
+            }
+            
 
-            this.ProgressRing.IsActive = false;
-            this.Grid.IsEnabled = true;
+           
 
         }
 
         private async void ArrowLeft_Click(object sender, RoutedEventArgs e)
         {
-            this.ProgressRing.IsActive = true;
-            this.Grid.IsEnabled = false;
-            await Task.Factory.StartNew(delegate
+            try
             {
-                try
+                this.ProgressRing.IsActive = true;
+                this.Grid.IsEnabled = false;
+                await Task.Factory.StartNew(delegate
                 {
-                    if ((this._fromBook - 10) < 0)
+                    try
                     {
-                        MessageBox.Show("Последняя страница!", "Info");
-                        return;
+                        if ((this._fromBook - 10) < 0)
+                        {
+                            MessageBox.Show("Последняя страница!", "Info");
+                            return;
+                        }
+
+                        if (!this.SaveBook())
+                        {
+                            MessageBox.Show("Невозможно сохранить текущую страницу!");
+                            return;
+                        }
+
+
+                        this._fromBook -= 10;
+                        
+
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            
+                            this.UpdateBooks();
+
+                            this.NumPageBook.Count = $"{int.Parse(this.NumPageBook.Count) - 1}";
+
+                        });
+
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message, "Error");
+                    }
+                });
+
+                this.ProgressRing.IsActive = false;
+                this.Grid.IsEnabled = true;
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Error");
+            }
+            
+        }
+
+        private async void ArrowRight_Reader_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+                this.ProgressRing.IsActive = true;
+                this.GridReader.IsEnabled = false;
+
+                await Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        if (!this.SaveReader())
+                        {
+                            MessageBox.Show("Невозможно сохранить текущую страницу!");
+                            return;
+                        }
+
+                        this._fromReader += 10;
+                        
+
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            var reader = this._readerRepository.GetRange(this._fromReader, BeforeReader);
+
+                            if (reader.Count == 0)
+                            {
+                                MessageBox.Show("Последняя страница!", "Info");
+                                this._fromReader -= 10;
+                                
+                                return;
+                            }
+
+                            this.GridReaders.ItemsSource = null;
+                            this.GridReaders.ItemsSource = reader;
+                            this.NumPageReader.Count = $"{int.Parse(this.NumPageReader.Count) + 1}";
+                        });
+
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message, "Error");
+                    }
+                    
+
+                   
+                });
+                this.ProgressRing.IsActive = false;
+                this.GridReader.IsEnabled = true;
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Error");
+            }
+
+
+        }
+
+        private async void ArrowLeft_Reader_Click(object sender, RoutedEventArgs e)
+        {
+            try
+            {
+
+
+                this.ProgressRing.IsActive = true;
+                this.GridReader.IsEnabled = false;
+
+                await Task.Factory.StartNew(() =>
+                {
+                    try
+                    {
+                        if ((this._fromReader - 10) < 0)
+                        {
+                            MessageBox.Show("Последняя страница!", "Info");
+                            return;
+                        }
+
+                        if (!this.SaveReader())
+                        {
+                            MessageBox.Show("Невозможно сохранить текущую страницу!");
+                            return;
+                        }
+
+
+                        this._fromReader -= 10;
+                       
+
+
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.GridReaders.ItemsSource = null;
+                            this.GridReaders.ItemsSource =
+                            this._readerRepository.GetRange(this._fromReader, BeforeReader);
+
+                            this.NumPageReader.Count = $"{int.Parse(this.NumPageReader.Count) - 1}";
+                        });
+
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message, "Error");
                     }
 
-                    if (!this.SaveBook())
+
+                });
+
+
+                this.ProgressRing.IsActive = false;
+                this.GridReader.IsEnabled = true;
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "Error");
+            }
+        }
+
+
+        private async void ArrowLeftEnd_OnClick(object sender, RoutedEventArgs e)
+        {
+
+            try
+            {
+                this.ProgressRing.IsActive = true;
+                this.Grid.IsEnabled = false;
+
+                await Task.Factory.StartNew(() =>
+                {
+                    try
                     {
-                        MessageBox.Show("Невозможно сохранить текущую страницу!");
-                        return;
+
+                        if (this._fromBook == 0)
+                        {
+                            MessageBox.Show("Вы на первой странице!", "Error");
+                            return;
+                        }
+
+                        this._fromBook = 0;
+                      
+
+                        if (!this.SaveBook())
+                        {
+                            MessageBox.Show("Невозможно сохранить текущую страницу!");
+                            return;
+                        }
+
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.UpdateBooks();
+
+                            this.NumPageBook.Count = "1";
+                        });
+
+
                     }
-
-
-                    this._fromBook -= 10;
-                    this._beforeBook -= 10;
-
-                    this.Dispatcher.Invoke(() =>
+                    catch (Exception exception)
                     {
-                        this.GridBooks.ItemsSource = null;
-                        this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                        MessageBox.Show(exception.Message, "Error");
+                    }
+                });
 
-                        this.NumPageBook.Count = $"{int.Parse(this.NumPageBook.Count) - 1}";
 
-                    });
-
-                }
-                catch (Exception exception)
-                {
-                    MessageBox.Show(exception.Message, "Error");
-                }
-            });
-
-            this.ProgressRing.IsActive = false;
-            this.Grid.IsEnabled = true;
-        }
-
-        private void ArrowRight_Reader_Click(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (!this.SaveReader())
-                {
-                    MessageBox.Show("Невозможно сохранить текущую страницу!");
-                    return;
-                }
-
-                this._fromReader += 10;
-                this._beforeReader += 10;
-
-                var reader = this._readerRepository.GetRange(this._fromReader, this._beforeReader);
-
-                if (reader.Count == 0)
-                {
-                    MessageBox.Show("Последняя страница!", "Info");
-                    this._fromReader -= 10;
-                    this._beforeReader -= 10;
-                    return;
-                }
-
-                this.GridReaders.ItemsSource = null;
-                this.GridReaders.ItemsSource = reader;
-
-                this.NumPageBook.Count = $"{int.Parse(this.NumPageBook.Count) + 1}";
+                this.ProgressRing.IsActive = false;
+                this.Grid.IsEnabled = true;
             }
             catch (Exception exception)
             {
@@ -1584,177 +1842,181 @@ namespace Library
             }
 
 
+
         }
 
-        private void ArrowLeft_Reader_Click(object sender, RoutedEventArgs e)
+        private async void ArrowRightEnd_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
-                if ((this._fromReader - 10) < 0)
+                this.ProgressRing.IsActive = true;
+                this.Grid.IsEnabled = false;
+                await Task.Factory.StartNew(() =>
                 {
-                    MessageBox.Show("Последняя страница!", "Info");
-                    return;
-                }
-
-                if (!this.SaveReader())
-                {
-                    MessageBox.Show("Невозможно сохранить текущую страницу!");
-                    return;
-                }
+                    try
+                    {
 
 
-                this._fromReader -= 10;
-                this._beforeReader -= 10;
+                        if (!this.SaveBook())
+                        {
+                            MessageBox.Show("Невозможно сохранить текущую страницу!");
+                            return;
+                        }
+
+                        var resBefore = (this._bookHelper.GetSize());
+                        var rest = resBefore % 10;
+
+                        if (rest == 0)
+                        {
+                            this._fromBook = resBefore - 10;
+                            
+                        }
+
+                        else
+                        {
+                            this._fromBook = resBefore - rest;
+                            
+                        }
+
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.UpdateBooks();
+
+                            this.NumPageBook.Count = $"{((this._fromBook + 10) / 10)}";
+                            
+                        });
 
 
-                this.GridReaders.ItemsSource = null;
-                this.GridReaders.ItemsSource = this._readerRepository.GetRange(this._fromReader, this._beforeReader);
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message, "Error");
+                    }
+                });
 
-                this.NumPageBook.Count = $"{int.Parse(this.NumPageBook.Count) - 1}";
+                this.ProgressRing.IsActive = false;
+                this.Grid.IsEnabled = true;
+
             }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
             }
 
-
         }
 
-        private void ArrowLeftEnd_OnClick(object sender, RoutedEventArgs e)
+        private async void ArrowLeftEndReader_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
+                this.ProgressRing.IsActive = true;
+                this.GridReader.IsEnabled = false;
 
-                if (this._fromBook == 0)
+
+                await Task.Factory.StartNew(() =>
                 {
-                    MessageBox.Show("Вы на первой странице!", "Error");
-                    return;
-                }
+                    try
+                    {
 
-                this._fromBook = 0;
-                this._beforeBook = 10;
+                        if (this._fromReader == 0)
+                        {
+                            MessageBox.Show("Вы на первой странице!", "Error");
+                            return;
+                        }
 
-                if (!this.SaveBook())
-                {
-                    MessageBox.Show("Невозможно сохранить текущую страницу!");
-                    return;
-                }
+                        this._fromReader = 0;
+                       
 
-                this.GridBooks.ItemsSource = null;
-                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                        if (!this.SaveReader())
+                        {
+                            MessageBox.Show("Невозможно сохранить текущую страницу!");
+                            return;
+                        }
 
-                this.NumPageBook.Count = "1";
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.GridReaders.ItemsSource = null;
 
+                            this.GridReaders.ItemsSource =
+                                this._readerRepository.GetRange(this._fromReader, BeforeReader);
+                            this.NumPageReader.Count = "1";
+
+                        });
+
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message, "Error");
+                    }
+                });
+
+
+
+                this.ProgressRing.IsActive = false;
+                this.GridReader.IsEnabled = true;
             }
             catch (Exception exception)
             {
                 MessageBox.Show(exception.Message, "Error");
             }
+           
         }
 
-        private void ArrowRightEnd_OnClick(object sender, RoutedEventArgs e)
+        private async void ArrowRightEndReader_OnClick(object sender, RoutedEventArgs e)
         {
             try
             {
+                this.ProgressRing.IsActive = true;
+                this.GridReader.IsEnabled = false;
 
-                if (!this.SaveBook())
+                await Task.Factory.StartNew(() =>
                 {
-                    MessageBox.Show("Невозможно сохранить текущую страницу!");
-                    return;
-                }
+                    try
+                    {
+                        if (!this.SaveReader())
+                        {
+                            MessageBox.Show("Невозможно сохранить текущую страницу!");
+                            return;
+                        }
 
-                var resBefore = (this._bookHelper.GetSize());
-                var rest = resBefore % 10;
+                        var resBefore = (this._readerRepository.GetSize());
+                        var rest = resBefore % 10;
 
-                if (rest == 0)
-                {
-                    this._fromBook = resBefore - 10;
-                    this._beforeBook = resBefore;
-                }
+                        if (rest == 0)
+                        {
+                            this._fromReader = resBefore - 10;
+                           // this._beforeReader = resBefore;
+                        }
 
-                else
-                {
-                    this._fromBook = resBefore - rest;
-                    this._beforeBook = resBefore + (10 - (rest - 10 * (rest / 10)));
-                }
+                        else
+                        {
+                            this._fromReader = resBefore - rest;
+                           // this._beforeReader = resBefore + (10 - (rest - 10 * (rest / 10)));
+                        }
 
-                this.GridBooks.ItemsSource = null;
-                this.GridBooks.ItemsSource = this._bookHelper.GetRange(this._fromBook, this._beforeBook);
+                        this.Dispatcher.Invoke(() =>
+                        {
+                            this.GridReaders.ItemsSource = null;
+                            this.GridReaders.ItemsSource =
+                                this._readerRepository.GetRange(this._fromReader, BeforeReader);
 
-                this.NumPageBook.Count = (resBefore % 2) == 1 ? $"{(resBefore / 10) + 1}" : $"{(resBefore / 10)}";
+                            this.NumPageReader.Count = $"{((this._fromReader + 10) / 10)}";
+                           
+                          
+                        });
 
-
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message, "Error");
-            }
-        }
-
-        private void ArrowLeftEndReader_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-
-                if (this._fromReader == 0)
-                {
-                    MessageBox.Show("Вы на первой странице!", "Error");
-                    return;
-                }
-
-                this._fromReader = 0;
-                this._beforeReader = 10;
-
-                if (!this.SaveReader())
-                {
-                    MessageBox.Show("Невозможно сохранить текущую страницу!");
-                    return;
-                }
-
-                this.GridReaders.ItemsSource = null;
-
-                this.GridReaders.ItemsSource = this._readerRepository.GetRange(this._fromReader, this._beforeReader);
-                this.NumPageReader.Count = "1";
-
-            }
-            catch (Exception exception)
-            {
-                MessageBox.Show(exception.Message, "Error");
-            }
-        }
-
-        private void ArrowRightEndReader_OnClick(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-
-                if (!this.SaveReader())
-                {
-                    MessageBox.Show("Невозможно сохранить текущую страницу!");
-                    return;
-                }
-
-                var resBefore = (this._readerRepository.GetSize());
-                var rest = resBefore % 10;
-
-                if (rest == 0)
-                {
-                    this._fromReader = resBefore - 10;
-                    this._beforeReader = resBefore;
-                }
-
-                else
-                {
-                    this._fromReader = resBefore - rest;
-                    this._beforeReader = resBefore + (10 - (rest - 10 * (rest / 10)));
-                }
-
-                this.GridReaders.ItemsSource = null;
-                this.GridReaders.ItemsSource = this._readerRepository.GetRange(this._fromReader, this._beforeReader);
-
-                this.NumPageReader.Count = (resBefore % 2) == 1 ? $"{(resBefore / 10) + 1}" : $"{(resBefore / 10)}";
+                        
+                    }
+                    catch (Exception exception)
+                    {
+                        MessageBox.Show(exception.Message, "Error");
+                    }
+                   
+                });
 
 
+                this.ProgressRing.IsActive = false;
+                this.GridReader.IsEnabled = true;
             }
             catch (Exception exception)
             {

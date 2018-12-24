@@ -23,6 +23,7 @@ namespace Library
     {
 
         private readonly ICollection<Genre> _genres = null;
+        public bool Status = false;
 
         public AddGenre(ICollection<Genre> genres)
         {
@@ -43,6 +44,8 @@ namespace Library
                 {
                     _genres.Add((Genre)res);
                 }
+
+                this.Status = true;
 
             }
             catch (Exception exception)

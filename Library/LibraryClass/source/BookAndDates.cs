@@ -5,7 +5,7 @@ using System.Linq;
 
 namespace LibraryClass
 {
-    public class BookAndReader
+    public class BookAndDates
     {
         public int Id { get; set; }
        

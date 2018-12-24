@@ -23,7 +23,7 @@ namespace Library
     {
         private readonly TypeRepository _typeRepository = new TypeRepository();
 
-            public bool Status = true;
+            public bool Status = false;
 
         public AddNewType()
         {

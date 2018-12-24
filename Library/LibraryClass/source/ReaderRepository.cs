@@ -71,6 +71,11 @@ namespace LibraryClass
             }
         }
 
+        public bool Check(Func<Reader, bool> func)
+        {
+            return this._baseContext.Readers.Any(func);
+        }
+
         public static bool Check(Reader reader)
         {
             return !string.IsNullOrEmpty(reader.LastName ) && !string.IsNullOrEmpty(reader.Name) && !string.IsNullOrEmpty(reader.Password) && !string.IsNullOrEmpty(reader.NumberDocument);

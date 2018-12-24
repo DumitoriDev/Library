@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Data.Entity;
+using System.Windows.Threading;
 using LibraryClass.source;
 
 namespace LibraryClass
@@ -13,7 +14,25 @@ namespace LibraryClass
     {
 
         private readonly DataBaseContext _baseContext = DataBaseContext.GetInstance();
+        public List<Book> GetAll()
+        {
 
+            //var langs = new LanguageRepository().GetAll();
+            //var editions = new EditionRepository().GetAll();
+            //var types = new TypeRepository().GetAll();
+            _baseContext.Books.LoadAsync().Wait();
+            var books = _baseContext.Books.Local.ToList();
+
+           
+            //foreach (var book in books)
+            //{
+            //    book.Languages = langs;
+            //    book.Types = types;
+            //    book.Editions = editions;
+            //}
+
+            return books;
+        }
 
         public void Add(Book book)
         {
@@ -35,7 +54,7 @@ namespace LibraryClass
                 this.Update(book);
             }
         }
-
+        
         public List<Book> GetRange(int from, int before)
         {
            
@@ -43,14 +62,14 @@ namespace LibraryClass
             var editions = new EditionRepository().GetAll();
             var types = new TypeRepository().GetAll();
 
-            var books = _baseContext.Books.OrderBy(book => book.Id).Skip(() => from).Take(() => before).ToList();
+            
+            var books = _baseContext.Books.OrderBy(book => book.Id).Skip(from).Take(before).ToList();
             foreach (var book in books)
             {
-                book.Languages = langs;
-                book.Types = types;
-                book.Editions = editions;
-
-                book.Img.Source = ImageHelper.BytesToImage(book.Cover);
+               book.Languages = langs;
+               book.Types = types;
+               book.Editions = editions;
+                
             }
 
             return books;
@@ -61,28 +80,35 @@ namespace LibraryClass
 
             return _baseContext.Books.FirstOrDefault(book => book.Id == id);
         }
-
-
-
+        
         public Book Get(Func<Book, bool> func)
         {
             return _baseContext.Books.FirstOrDefault(func);
         }
 
-        public List<Book> GetAll()
-        {
-            var langs = new LanguageRepository().GetAll();
-            var editions = new EditionRepository().GetAll();
-            var types = new TypeRepository().GetAll();
-            var books = _baseContext.Books.ToList();
-            foreach (var book in books)
-            {
-                book.Languages = langs;
-                book.Types = types;
-                book.Editions = editions;
-            }
+        
 
-            return books;
+        public DbSet<Book> GetAll1()
+        {
+            lock (_baseContext)
+            {
+
+
+                var langs = new LanguageRepository().GetAll();
+                var editions = new EditionRepository().GetAll();
+                var types = new TypeRepository().GetAll();
+                
+                var books = _baseContext.Books;
+                //foreach (var book in books)
+                //{
+                //    book.Languages = langs;
+                //    book.Types = types;
+                //    book.Editions = editions;
+                //}
+
+
+                return _baseContext.Books;
+            }
         }
 
 
@@ -164,7 +190,7 @@ namespace LibraryClass
 
         public bool Check(Func<Book, bool> func)
         {
-            return this._baseContext.Books.All(func);
+            return this._baseContext.Books.Any(func);
         }
 
         public int GetSize()
